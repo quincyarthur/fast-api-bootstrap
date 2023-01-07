@@ -8,8 +8,13 @@ fastapi = "*"
 uvicorn = "*"
 watchfiles = "*"
 sqlalchemy = "*"
+python-dotenv = "*"
 
 [dev-packages]
+black = "*"
 
 [requires]
 python_version = "3.11"
+
+[pipenv]
+allow_prereleases = true
