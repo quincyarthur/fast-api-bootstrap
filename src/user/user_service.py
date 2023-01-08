@@ -12,6 +12,6 @@ class UserService:
         existing_user = self.user_repo.find_by_email(email=create_user.email)
         if existing_user:
             raise HTTPException(
-                status_code=400, message=UserExceptions.EMAIL_EXISTS.value
+                status_code=400, detail=UserExceptions.EMAIL_EXISTS.value
             )
         return self.user_repo.add_user(create_user=create_user)
