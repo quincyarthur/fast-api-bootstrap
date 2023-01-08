@@ -1,10 +1,12 @@
 from dataclasses import dataclass
-from src.user.dto.user_dto import UserDTO
 from utils.password import Password
 
 
 @dataclass
-class CreateUserDTO(UserDTO):
+class CreateUserDTO:
+    first_name: str
+    last_name: str
+    email: str
     password: str
 
     def __post_init__(self) -> None:
