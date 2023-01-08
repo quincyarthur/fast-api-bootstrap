@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from user.dto.user_dto import UserDTO
-from user.dto.create_user_dto import CreateUserDTO
-from user.user_model import User
+from src.user.dto.user_dto import UserDTO
+from src.user.dto.create_user_dto import CreateUserDTO
+from src.user.user_model import User
 from db.config import get_session
 from sqlalchemy import select
 

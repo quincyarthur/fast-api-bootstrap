@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from db.config import engine, Base
-import os
 from src.user import user_controller
 
 app = FastAPI()

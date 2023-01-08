@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from user.dto.user_dto import UserDTO
+from src.user.dto.user_dto import UserDTO
 from utils.password import Password
 
 

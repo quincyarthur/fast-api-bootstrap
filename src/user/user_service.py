@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from user.user_repo import UserRepo, UserDTO, CreateUserDTO
+from src.user.user_repo import UserRepo, UserDTO, CreateUserDTO
 from fastapi import HTTPException
-from user.enum.user_exceptions import UserExceptions
+from src.user.enum.user_exceptions import UserExceptions
 
 
 @dataclass
