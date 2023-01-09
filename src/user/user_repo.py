@@ -22,7 +22,7 @@ class UserRepo:
             password=create_user.hashed_password,
         )
         user = await self.db_session.add(user)
-        self.db_session.commit()
+        await self.db_session.commit()
         return self.to_user_dto(user=user)
 
     def to_user_dto(self, user: User) -> UserDTO:
