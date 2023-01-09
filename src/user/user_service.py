@@ -9,7 +9,7 @@ class UserService:
     user_repo: UserRepo
 
     async def add_user(self, create_user: CreateUserDTO) -> UserDTO:
-        existing_user = self.user_repo.find_by_email(email=create_user.email)
+        existing_user = await self.user_repo.find_by_email(email=create_user.email)
         if existing_user:
             raise HTTPException(
                 status_code=400, detail=UserExceptions.EMAIL_EXISTS.value
