@@ -6,7 +6,7 @@ from src.user.enum.user_exceptions import UserExceptions
 
 @dataclass
 class UserService:
-    def __init__(self, user_repo=Depends(UserRepo)):
+    def __init__(self, user_repo: UserRepo = Depends(UserRepo)):
         self.user_repo = user_repo
 
     async def add_user(self, create_user: CreateUserDTO) -> UserDTO:
@@ -15,4 +15,5 @@ class UserService:
             raise HTTPException(
                 status_code=400, detail=UserExceptions.EMAIL_EXISTS.value
             )
-        return self.user_repo.add_user(create_user=create_user)
+        print(f"Create User: {create_user}")
+        return await self.user_repo.add_user(create_user=create_user)

@@ -9,12 +9,12 @@ from fastapi import Depends
 
 @dataclass
 class UserRepo:
-    def __init__(self, db=Depends(get_session)) -> None:
+    def __init__(self, db: AsyncSession = Depends(get_session)) -> None:
         self.db_session = db
 
     async def find_by_email(self, email: str) -> UserDTO:
-        user = await self.db_session(select(User).where(User.email == email).limit(1))
-        return self.to_user_dto(user=user)
+        user = await self.db_session.execute(select(User).where(User.email == email))
+        return self.to_user_dto(user=user.first())
 
     async def add_user(self, create_user: CreateUserDTO) -> UserDTO:
         user = User(
@@ -23,6 +23,7 @@ class UserRepo:
             email=create_user.email,
             password=create_user.hashed_password,
         )
+        print(f"user: {user}")
         user = await self.db_session.add(user)
         await self.db_session.commit()
         return self.to_user_dto(user=user)
