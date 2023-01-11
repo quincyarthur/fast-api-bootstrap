@@ -20,4 +20,4 @@ async def create_schema() -> None:
 @app.get("/")
 async def root():
     await create_schema()
-    return {"message": "Hello Quincy!"}
+    return {"message": "Hello World!"}
