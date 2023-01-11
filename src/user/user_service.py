@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from src.user.user_repo import UserRepo, UserDTO, CreateUserDTO, AsyncSession
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
 from src.user.enum.user_exceptions import UserExceptions
 
 
 @dataclass
 class UserService:
-    user_repo: UserRepo
+    def __init__(self, user_repo=Depends(UserRepo)):
+        self.user_repo = user_repo
 
     async def add_user(self, create_user: CreateUserDTO) -> UserDTO:
         existing_user = await self.user_repo.find_by_email(email=create_user.email)

@@ -4,12 +4,13 @@ from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.user_model import User
 from db.config import get_session, AsyncSession
 from sqlalchemy import select
+from fastapi import Depends
 
 
 @dataclass
 class UserRepo:
-    def __init__(self) -> None:
-        self.db_session = get_session
+    def __init__(self, db=Depends(get_session)) -> None:
+        self.db_session = db
 
     async def find_by_email(self, email: str) -> UserDTO:
         user = await self.db_session(select(User).where(User.email == email).limit(1))
