@@ -9,8 +9,9 @@ uvicorn = "*"
 watchfiles = "*"
 sqlalchemy = "*"
 python-dotenv = "*"
-passlib = {extras = ["bcrypt"], version = "*"}
+passlib = {extras = ["bcrypt"],version = "*"}
 asyncpg = "*"
+debugpy = "*"
 
 [dev-packages]
 black = "*"

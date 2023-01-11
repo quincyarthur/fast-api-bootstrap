@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.user.user_repo import UserRepo, UserDTO, CreateUserDTO
+from src.user.user_repo import UserRepo, UserDTO, CreateUserDTO, AsyncSession
 from fastapi import HTTPException
 from src.user.enum.user_exceptions import UserExceptions
 

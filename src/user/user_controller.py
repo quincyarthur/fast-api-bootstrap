@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from src.user.dto.user_dto import UserDTO
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.user_service import UserService
+from db.config import get_session, AsyncSession
 
 router = APIRouter()
 

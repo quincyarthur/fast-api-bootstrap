@@ -2,13 +2,14 @@ from dataclasses import dataclass
 from src.user.dto.user_dto import UserDTO
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.user_model import User
-from db.config import get_session
+from db.config import get_session, AsyncSession
 from sqlalchemy import select
 
 
 @dataclass
 class UserRepo:
-    db_session = get_session()
+    def __init__(self) -> None:
+        self.db_session = get_session
 
     async def find_by_email(self, email: str) -> UserDTO:
         user = await self.db_session(select(User).where(User.email == email).limit(1))
