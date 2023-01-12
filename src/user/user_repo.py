@@ -22,9 +22,10 @@ class UserRepo:
             last_name=create_user.last_name,
             email=create_user.email,
             password=create_user.hashed_password,
+            id=None,
         )
-        user = self.db_session.add(user)
-        self.db_session.commit()
+        self.db_session.add(user)
+        await self.db_session.flush()
         return self.to_user_dto(user=user)
 
     def to_user_dto(self, user: User) -> UserDTO:
