@@ -11,5 +11,4 @@ async def create_user(
     user: CreateUserDTO, user_service: UserService = Depends(UserService)
 ):
     user = await user_service.add_user(create_user=user)
-    print(f"user: {user}")
     return user

@@ -23,9 +23,8 @@ class UserRepo:
             email=create_user.email,
             password=create_user.hashed_password,
         )
-        print(f"user: {user}")
-        user = await self.db_session.add(user)
-        await self.db_session.commit()
+        user = self.db_session.add(user)
+        self.db_session.commit()
         return self.to_user_dto(user=user)
 
     def to_user_dto(self, user: User) -> UserDTO:
