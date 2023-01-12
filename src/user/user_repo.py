@@ -14,7 +14,8 @@ class UserRepo:
 
     async def find_by_email(self, email: str) -> UserDTO:
         user = await self.db_session.execute(select(User).where(User.email == email))
-        return self.to_user_dto(user=user.first())
+        user = user.scalar_one()
+        return self.to_user_dto(user=user)
 
     async def add_user(self, create_user: CreateUserDTO) -> UserDTO:
         user = User(
@@ -25,7 +26,7 @@ class UserRepo:
             id=None,
         )
         self.db_session.add(user)
-        await self.db_session.flush()
+        await self.db_session.commit()
         return self.to_user_dto(user=user)
 
     def to_user_dto(self, user: User) -> UserDTO:
