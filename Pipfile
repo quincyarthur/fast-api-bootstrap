@@ -12,6 +12,7 @@ python-dotenv = "*"
 passlib = {extras = ["bcrypt"],version = "*"}
 asyncpg = "*"
 debugpy = "*"
+alembic = "*"
 
 [dev-packages]
 black = "*"
