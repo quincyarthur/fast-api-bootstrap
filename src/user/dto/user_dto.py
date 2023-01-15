@@ -8,4 +8,5 @@ class UserDTO:
     first_name: str
     last_name: str
     email: str
+    origin: str
     id: Optional[UUID]

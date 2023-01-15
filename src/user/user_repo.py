@@ -23,6 +23,7 @@ class UserRepo:
             last_name=create_user.last_name,
             email=create_user.email,
             password=create_user.hashed_password,
+            origin=create_user.origin,
             id=None,
         )
         self.db_session.add(user)
@@ -36,6 +37,7 @@ class UserRepo:
                 first_name=user.first_name,
                 last_name=user.last_name,
                 email=user.email,
+                origin=user.origin,
                 id=user.id,
             )
         return user_dto

@@ -8,6 +8,7 @@ class CreateUserDTO:
     last_name: str
     email: str
     password: str
+    origin: str
 
     def __post_init__(self) -> None:
         self.hashed_password = Password().hash(self.password)
