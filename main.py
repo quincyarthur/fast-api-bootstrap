@@ -18,9 +18,9 @@ app.add_middleware(
 
 app.include_router(user_controller.router)
 
-# import debugpy
+import debugpy
 
-# debugpy.listen(("0.0.0.0", 5678))
+debugpy.listen(("0.0.0.0", 5678))
 
 
 async def create_schema() -> None:
