@@ -23,13 +23,6 @@ import debugpy
 debugpy.listen(("0.0.0.0", 5678))
 
 
-async def create_schema() -> None:
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
-
-
 @app.get("/")
 async def root():
-    await create_schema()
     return {"message": "Hello World!"}
