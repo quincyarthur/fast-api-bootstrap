@@ -1,7 +1,5 @@
 from fastapi import APIRouter, Depends
-from src.user.dto.user_dto import UserDTO
-from src.user.dto.create_user_dto import CreateUserDTO
-from src.user.user_service import UserService
+from src.user.user_service import UserService, CreateUserDTO, UserDTO
 from src.user.enum.user_origins import UserOrigins
 
 router = APIRouter()
