@@ -9,4 +9,5 @@ class UserDTO:
     last_name: str
     email: str
     origin: str
-    id: Optional[UUID]
+    password: Optional[str] = None
+    id: Optional[UUID] = None

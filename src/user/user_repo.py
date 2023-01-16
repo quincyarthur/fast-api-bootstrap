@@ -30,14 +30,16 @@ class UserRepo:
         await self.db_session.commit()
         return self.to_user_dto(user=user)
 
-    def to_user_dto(self, user: User) -> UserDTO:
+    def to_user_dto(self, user: User, include_password: bool = False) -> UserDTO:
         user_dto: UserDTO = None
+
         if user:
             user_dto = UserDTO(
                 first_name=user.first_name,
                 last_name=user.last_name,
                 email=user.email,
                 origin=user.origin,
+                password=user.password,
                 id=user.id,
             )
         return user_dto
