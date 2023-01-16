@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from db.config import engine, Base
 from src.user import user_controller
 from src.auth import auth_controller
 from fastapi.middleware.cors import CORSMiddleware
