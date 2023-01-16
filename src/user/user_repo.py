@@ -39,12 +39,6 @@ class UserRepo:
         user_dto: UserDTO = None
 
         if user:
-            user_dto = UserDTO(
-                first_name=user.first_name,
-                last_name=user.last_name,
-                email=user.email,
-                origin=user.origin,
-                password=user.password,
-                id=user.id,
-            )
+            UserDTO(**user.__dict__)
+
         return user_dto
