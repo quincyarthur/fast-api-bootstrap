@@ -15,6 +15,7 @@ debugpy = "*"
 alembic = "*"
 python-jose = {extras = ["cryptography"], version = "*"}
 python-multipart = "*"
+email-validator = "*"
 
 [dev-packages]
 black = "*"
