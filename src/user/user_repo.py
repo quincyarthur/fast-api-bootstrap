@@ -35,7 +35,7 @@ class UserRepo:
         await self.db_session.commit()
         return self.to_user_dto(user=user)
 
-    def to_user_dto(self, user: User, include_password: bool = False) -> UserDTO:
+    def to_user_dto(self, user: User) -> UserDTO:
         user_dto: UserDTO = None
 
         if user:
