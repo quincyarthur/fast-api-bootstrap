@@ -9,7 +9,7 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=UserDTO, summary="Create a user")
+@router.post("/", response_model=UserDTO, summary="Create user")
 async def create_user(
     user: CreateUserDTO,
     user_service: UserService = Depends(UserService),
