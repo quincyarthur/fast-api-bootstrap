@@ -3,10 +3,13 @@ from src.user.user_service import UserService, CreateUserDTO, UserDTO
 from src.user.enum.user_origins import UserOrigins
 from src.auth.auth_service import AuthService
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/user",
+    tags=["users"],
+)
 
 
-@router.post("/user", response_model=UserDTO | None)
+@router.post("/", response_model=UserDTO, summary="Create a user")
 async def create_user(
     user: CreateUserDTO,
     user_service: UserService = Depends(UserService),
@@ -17,6 +20,11 @@ async def create_user(
     return await user_service.exclude_password(user=created_user)
 
 
-@router.get("/user/me", response_model=UserDTO)
+@router.get(
+    "/me",
+    response_model=UserDTO,
+    summary="Get Current User",
+    description="Find the current user based on the JWT token provided",
+)
 async def get_current_user(auth_service: AuthService = Depends(AuthService)):
     return await auth_service.get_current_user()

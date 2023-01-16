@@ -5,10 +5,15 @@ from utils.password import Password
 from utils.jwt import create_access_token, JWTToken
 from src.auth.enum.auth_exceptions import AuthExceptions
 
-router = APIRouter()
+router = APIRouter(tags=["auth"])
 
 
-@router.post("/signin", response_model=JWTToken)
+@router.post(
+    "/signin",
+    response_model=JWTToken,
+    summary="Signin",
+    description="Accept email and password and return JWT Token if credentials are correct",
+)
 async def signin(
     form_data: OAuth2PasswordRequestForm = Depends(),
     user_service: UserService = Depends(UserService),
