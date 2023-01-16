@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from src.user.user_service import UserService
 from utils.password import Password
-from utils.jwt import create_access_token
+from utils.jwt import create_access_token, JWTToken
 from src.auth.enum.auth_exceptions import AuthExceptions
 
 router = APIRouter()
 
 
-@router.post("/signin", response_model=str)
+@router.post("/signin", response_model=JWTToken)
 async def signin(
     form_data: OAuth2PasswordRequestForm = Depends(),
     user_service: UserService = Depends(UserService),
