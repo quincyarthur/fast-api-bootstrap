@@ -39,6 +39,6 @@ class UserRepo:
         user_dto: UserDTO = None
 
         if user:
-            UserDTO(**user.__dict__)
+            user_dto = UserDTO(**user.__dict__)
 
         return user_dto
