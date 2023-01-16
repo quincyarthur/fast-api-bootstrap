@@ -12,4 +12,7 @@ class CreateUserDTO:
     origin: Optional[str] = None
 
     def __post_init__(self) -> None:
+        self.first_name = self.first_name.lower()
+        self.last_name = self.last_name.lower()
+        self.email = self.email.lower()
         self.hashed_password = Password().hash(self.password)
