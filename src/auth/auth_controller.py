@@ -12,9 +12,10 @@ router = APIRouter()
 async def signin(
     form_data: OAuth2PasswordRequestForm = Depends(),
     user_service: UserService = Depends(UserService),
+    pwd: Password = Depends(Password),
 ) -> str:
     user = await user_service.find_by_email(email=form_data.username)
-    if not Password().verify(
+    if not pwd.verify(
         plain_text_password=form_data.password, hashed_password=user.password
     ):
         raise HTTPException(
