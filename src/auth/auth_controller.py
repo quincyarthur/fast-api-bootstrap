@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from src.user.user_service import UserService
 from utils.password import Password
 from utils.jwt import create_access_token
-from auth.enum.auth_exceptions import AuthExceptions
+from src.auth.enum.auth_exceptions import AuthExceptions
 
 router = APIRouter()
 
