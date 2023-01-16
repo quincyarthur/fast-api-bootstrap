@@ -10,6 +10,15 @@ class UserService:
     def __init__(self, user_repo: UserRepo = Depends(UserRepo)):
         self.user_repo = user_repo
 
+    async def find_by_id(self, id: str) -> UserDTO:
+        user = await self.user_repo.find_by_id(id=id)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=UserExceptions.ID_NOT_FOUND.value,
+            )
+        return user
+
     async def find_by_email(self, email: str) -> UserDTO:
         user = await self.user_repo.find_by_email(email=email)
         if not user:

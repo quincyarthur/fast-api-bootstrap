@@ -12,6 +12,11 @@ class UserRepo:
     def __init__(self, db: AsyncSession = Depends(get_session)) -> None:
         self.db_session = db
 
+    async def find_by_id(self, id: str) -> UserDTO:
+        user = await self.db_session.execute(select(User).where(User.id == id))
+        user = user.scalar_one_or_none()
+        return self.to_user_dto(user=user)
+
     async def find_by_email(self, email: str) -> UserDTO:
         user = await self.db_session.execute(select(User).where(User.email == email))
         user = user.scalar_one_or_none()

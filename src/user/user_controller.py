@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from src.user.user_service import UserService, CreateUserDTO, UserDTO
 from src.user.enum.user_origins import UserOrigins
+from src.auth.auth_service import AuthService
 
 router = APIRouter()
 
@@ -14,3 +15,8 @@ async def create_user(
     user.origin = UserOrigins.LOCAL.value
     created_user = await user_service.add_user(create_user=user)
     return await user_service.exclude_password(user=created_user)
+
+
+@router.get("/user/me", response_model=UserDTO)
+async def get_current_user(auth_service: AuthService = Depends(AuthService)):
+    return await auth_service.get_current_user()
