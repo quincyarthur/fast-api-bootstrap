@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from db.config import engine, Base
 from src.user import user_controller
+from src.auth import auth_controller
 from fastapi.middleware.cors import CORSMiddleware
 
 ALLOWED_HOSTS = ["*"]
@@ -17,6 +18,8 @@ app.add_middleware(
 
 
 app.include_router(user_controller.router)
+app.include_router(auth_controller.router)
+
 
 import debugpy
 
