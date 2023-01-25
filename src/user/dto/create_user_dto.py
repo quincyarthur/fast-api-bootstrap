@@ -8,7 +8,7 @@ class CreateUserDTO:
     first_name: str
     last_name: str
     email: str
-    password: str
+    password: Optional[str] = None
     origin: Optional[str] = None
 
     def __post_init__(self) -> None:
