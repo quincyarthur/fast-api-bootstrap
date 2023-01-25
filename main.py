@@ -2,11 +2,13 @@ from fastapi import FastAPI
 from src.user import user_controller
 from src.auth import auth_controller
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 ALLOWED_HOSTS = ["*"]
 
 app = FastAPI()
 
+app.add_middleware(SessionMiddleware, secret_key="secret-string")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_HOSTS,
