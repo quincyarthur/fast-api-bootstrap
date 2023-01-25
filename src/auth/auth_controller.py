@@ -4,6 +4,8 @@ from src.user.user_service import UserService
 from utils.password import Password
 from utils.jwt import create_access_token, JWTToken
 from src.auth.enum.auth_exceptions import AuthExceptions
+from starlette.requests import Request
+from src.auth.config import oauth
 
 router = APIRouter(tags=["auth"])
 
@@ -28,3 +30,15 @@ async def signin(
             detail=AuthExceptions.WRONG_PASSWORD.value,
         )
     return create_access_token(user.id)
+
+
+@router.route(
+    "/google",
+    response_model=JWTToken,
+    summary="Google Auth Callback",
+    description="Retrieves User Info from google, creates user if email does not exist and ultimately returns a JWT token",
+)
+async def google_auth(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+    user = token["userinfo"]
+    return user
