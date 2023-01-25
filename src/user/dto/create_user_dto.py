@@ -15,4 +15,6 @@ class CreateUserDTO:
         self.first_name = self.first_name.lower()
         self.last_name = self.last_name.lower()
         self.email = self.email.lower()
-        self.hashed_password = Password().hash(self.password)
+        self.hashed_password = None
+        if self.password:
+            self.hashed_password = Password().hash(self.password)

@@ -20,7 +20,7 @@ class UserService:
         return user
 
     async def find_by_email(self, email: str) -> UserDTO:
-        user = await self.user_repo.find_by_email(email=email)
+        user = await self.user_repo.find_by_email(email=email.lower())
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
