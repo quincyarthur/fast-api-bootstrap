@@ -11,7 +11,7 @@ from src.user.enum.user_origins import UserOrigins
 from src.user.enum.user_exceptions import UserExceptions
 from src.auth.auth_service import AuthService
 
-router = APIRouter(tags=["auth"])
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post(
