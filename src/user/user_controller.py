@@ -4,7 +4,7 @@ from src.user.enum.user_origins import UserOrigins
 from src.auth.auth_service import AuthService
 from src.email.interface.email_interface import IEmail
 from src.email.dto.email_dto import EmailDTO
-from src.email.send_in_blue import SendInBlue
+from src.email.send_in_blue import SendInBlue, SIBEmailTemplates
 import os
 from utils.jwt import create_access_token
 from utils.password import Password
@@ -46,7 +46,11 @@ async def forgot_password(
     jwt = create_access_token(subject=user.id)
     reset_url = f"{os.environ['FRONTEND_URL']}/token?={jwt.access_token}"
     params = {"first_name": user.first_name.capitalize(), "reset_url": reset_url}
-    email = EmailDTO(recipients=[user.email], template_id=1, params=params)
+    email = EmailDTO(
+        recipients=[user.email],
+        template_id=SIBEmailTemplates.FORGOT_PASSWORD.value,
+        params=params,
+    )
     await email_service.send(email=email)
 
 

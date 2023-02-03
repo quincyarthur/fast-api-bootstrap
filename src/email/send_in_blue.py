@@ -5,6 +5,11 @@ import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 from pprint import pprint
 import os
+from enum import Enum
+
+
+class SIBEmailTemplates(Enum):
+    FORGOT_PASSWORD = 1
 
 
 @dataclass
