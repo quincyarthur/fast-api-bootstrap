@@ -2,6 +2,11 @@ from fastapi import APIRouter, Depends
 from src.user.user_service import UserService, CreateUserDTO, UserDTO
 from src.user.enum.user_origins import UserOrigins
 from src.auth.auth_service import AuthService
+from src.email.interface.email_interface import IEmail
+from src.email.dto.email_dto import EmailDTO
+from src.email.send_in_blue import SendInBlue
+import os
+from utils.jwt import create_access_token
 
 router = APIRouter(
     prefix="/user",
@@ -28,3 +33,17 @@ async def create_user(
 )
 async def get_current_user(auth_service: AuthService = Depends(AuthService)):
     return await auth_service.get_current_user()
+
+
+@router.post("forgot-password", summary="Forgot Password")
+async def forgot_password(
+    email_address: str,
+    user_service: UserService = Depends(UserService),
+    email_service: IEmail = Depends(SendInBlue),
+):
+    user = await user_service.find_by_email(email=email_address)
+    token = create_access_token(subject=user.id)
+    reset_url = f"{os.environ['FRONTEND_URL']}/token?={token}"
+    params = {"first_name": user.first_name.capitalize(), "reset_url": reset_url}
+    email = EmailDTO(recipients=[user.email], template_id=1, params=params)
+    email_service.send(email=email)
