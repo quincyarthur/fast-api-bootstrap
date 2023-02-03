@@ -19,6 +19,7 @@ email-validator = "*"
 authlib = "*"
 httpx = "*"
 itsdangerous = "*"
+sib-api-v3-sdk = "*"
 
 [dev-packages]
 black = "*"
