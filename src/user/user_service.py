@@ -57,3 +57,6 @@ class UserService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=str(e),
             )
+
+    async def update_password(self, user: UserDTO) -> None:
+        await self.user_repo.update_password(user=user)

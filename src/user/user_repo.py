@@ -3,7 +3,7 @@ from src.user.dto.user_dto import UserDTO
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.user_model import User
 from db.config import get_session, AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update
 from fastapi import Depends
 
 
@@ -42,3 +42,9 @@ class UserRepo:
             user_dto = UserDTO(**user.__dict__)
 
         return user_dto
+
+    async def update_password(self, user: UserDTO) -> None:
+        user = await self.db_session.execute(
+            update(User).where(User.id == user.id).values(password=user.password)
+        )
+        return None
