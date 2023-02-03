@@ -8,6 +8,7 @@ from src.email.send_in_blue import SendInBlue, SIBEmailTemplates
 import os
 from utils.jwt import create_access_token
 from utils.password import Password
+from src.auth.auth_bearer import JWTBearer
 
 router = APIRouter(
     prefix="/user",
@@ -54,13 +55,16 @@ async def forgot_password(
     await email_service.send(email=email)
 
 
-@router.put("/password", summary="Update User Password")
+@router.put(
+    "/password", summary="Update User Password", dependencies=[Depends(JWTBearer())]
+)
 async def update_password(
     user_password: str,
-    auth_service: AuthService = Depends(AuthService),
+    # auth_service: AuthService = Depends(AuthService),
     user_service: UserService = Depends(UserService),
     pwd: Password = Depends(Password),
 ):
-    user = await auth_service.get_current_user()
-    user.password = pwd.hash(password=user_password)
-    await user_service.update_password(user=user)
+    pass
+    # user = await auth_service.get_current_user()
+    # user.password = pwd.hash(password=user_password)
+    # await user_service.update_password(user=user)
