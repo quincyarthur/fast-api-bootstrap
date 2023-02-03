@@ -50,7 +50,7 @@ async def forgot_password(
     await email_service.send(email=email)
 
 
-@router.put("/password", summary="Update User")
+@router.put("/password", summary="Update User Password")
 async def update_password(
     user_password: str,
     auth_service: AuthService = Depends(AuthService),
