@@ -47,4 +47,4 @@ class UserRepo:
         user = await self.db_session.execute(
             update(User).where(User.id == user.id).values(password=user.password)
         )
-        return None
+        return await self.db_session.commit()

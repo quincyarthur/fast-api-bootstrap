@@ -12,6 +12,7 @@ JWT_SECRET_KEY = os.environ["JWT_SECRET_KEY"]
 @dataclass
 class JWTToken:
     access_token: str
+    token_type: str = "bearer"
 
 
 def create_access_token(subject: Any) -> JWTToken:

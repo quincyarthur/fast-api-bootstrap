@@ -9,7 +9,7 @@ from src.user.user_service import UserService, UserDTO
 from utils.jwt import create_access_token, JWTToken
 from utils.password import Password
 
-local_user_oauth = OAuth2PasswordBearer(tokenUrl="/signin", scheme_name="JWT")
+local_user_oauth = OAuth2PasswordBearer(tokenUrl="/auth/signin/", scheme_name="JWT")
 
 
 @dataclass
