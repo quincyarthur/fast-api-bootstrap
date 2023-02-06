@@ -9,7 +9,7 @@ import os
 from utils.jwt import create_access_token
 from utils.password import Password
 
-# from src.auth.auth_bearer import JWTBearer
+from src.auth.auth_bearer import JWTBearer
 
 router = APIRouter(
     prefix="/user",
@@ -56,14 +56,14 @@ async def forgot_password(
     await email_service.send(email=email)
 
 
-# @router.put("/password", summary="Update User Password")
-# async def update_password(
-#     user_password: str,
-#     current_user_id=Depends(JWTBearer()),
-#     # auth_service: AuthService = Depends(AuthService),
-#     user_service: UserService = Depends(UserService),
-#     pwd: Password = Depends(Password),
-# ):
-#     user = await user_service.find_by_id(id=current_user_id)
-#     user.password = pwd.hash(password=user_password)
-#     await user_service.update_password(user=user)
+@router.put("/password", summary="Update User Password")
+async def update_password(
+    user_password: str,
+    current_user_id=Depends(JWTBearer()),
+    # auth_service: AuthService = Depends(AuthService),
+    user_service: UserService = Depends(UserService),
+    pwd: Password = Depends(Password),
+):
+    user = await user_service.find_by_id(id=current_user_id)
+    user.password = pwd.hash(password=user_password)
+    await user_service.update_password(user=user)
