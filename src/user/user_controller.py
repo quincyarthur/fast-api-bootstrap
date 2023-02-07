@@ -21,10 +21,12 @@ async def create_user(
     user: CreateUserDTO,
     user_service: UserService = Depends(UserService),
     response_model_exclude_none=True,
+    email_service: IEmail = Depends(SendInBlue),
 ):
     user.origin = UserOrigins.LOCAL.value
     created_user = await user_service.add_user(create_user=user)
-    return await user_service.exclude_password(user=created_user)
+    created_user = await user_service.exclude_password(user=created_user)
+    await send_activation_email(user=created_user, email_service=email_service)
 
 
 @router.get(
@@ -65,3 +67,15 @@ async def update_password(
     user = await user_service.find_by_id(id=current_user_id)
     user.password = pwd.hash(password=user_password)
     await user_service.update_password(user=user)
+
+
+async def send_activation_email(user: UserDTO, email_service: IEmail) -> None:
+    jwt = create_access_token(subject=user.id)
+    reset_url = f"{os.environ['FRONTEND_URL']}/activate?={jwt.access_token}"
+    params = {"first_name": user.first_name.capitalize(), "reset_url": reset_url}
+    email = EmailDTO(
+        recipients=[user.email],
+        template_id=SIBEmailTemplates.ACTIVATE_USER.value,
+        params=params,
+    )
+    await email_service.send(email=email)
