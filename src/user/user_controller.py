@@ -8,10 +8,6 @@ from src.email.send_in_blue import SendInBlue, SIBEmailTemplates
 import os
 from utils.jwt import create_access_token
 from utils.password import Password
-<<<<<<< HEAD
-=======
-
->>>>>>> d233081a2d2ab5f9a2c392115116e9654fc3804a
 from src.auth.auth_bearer import JWTBearer
 
 router = APIRouter(
