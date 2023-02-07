@@ -24,10 +24,9 @@ async def signin(
     form_data: OAuth2PasswordRequestForm = Depends(),
     auth_service: AuthService = Depends(AuthService),
 ) -> str:
-    jwt = await auth_service.signin(
+    return await auth_service.signin(
         email=form_data.username, password=form_data.password
     )
-    return {"access_token": jwt.access_token, "token_type": jwt.token_type}
 
 
 @router.get(
