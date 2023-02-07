@@ -52,7 +52,7 @@ async def forgot_password(
         template_id=SIBEmailTemplates.FORGOT_PASSWORD.value,
         params=params,
     )
-    await email_service.send(email=email)
+    return await email_service.send(email=email)
 
 
 @router.put("/password", summary="Update User Password")
@@ -64,4 +64,4 @@ async def update_password(
 ):
     user = await user_service.find_by_id(id=current_user_id)
     user.password = pwd.hash(password=user_password)
-    await user_service.update_password(user=user)
+    return await user_service.update_password(user=user)
