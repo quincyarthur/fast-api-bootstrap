@@ -45,7 +45,7 @@ async def forgot_password(
 ):
     user = await user_service.find_by_email(email=email_address)
     jwt = create_access_token(subject=user.id)
-    reset_url = f"{os.environ['FRONTEND_URL']}/token?={jwt.access_token}"
+    reset_url = f"{os.environ['FRONTEND_URL']}/forgot-password?={jwt.access_token}"
     params = {"first_name": user.first_name.capitalize(), "reset_url": reset_url}
     email = EmailDTO(
         recipients=[user.email],
