@@ -29,6 +29,7 @@ class UserRepo:
             email=create_user.email,
             password=create_user.hashed_password,
             origin=create_user.origin,
+            activated=create_user.activated,
             id=None,
         )
         self.db_session.add(user)
