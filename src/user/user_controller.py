@@ -55,7 +55,7 @@ async def forgot_password(
         template_id=SIBEmailTemplates.FORGOT_PASSWORD.value,
         params=params,
     )
-    return await email_service.send(email=email)
+    await email_service.send(email=email)
 
 
 @router.put("/password", summary="Update User Password")
@@ -67,4 +67,44 @@ async def update_password(
 ):
     user = await user_service.find_by_id(id=current_user_id)
     user.password = pwd.hash(password=user_password)
-    return await user_service.update_password(user=user)
+    await user_service.update_password(user=user)
+
+
+@router.put(
+    "/activation",
+    summary="Update User Activation Flag",
+    description="Activate User using token sent in the activation email when the account was created",
+)
+async def update_activation_flag(
+    current_user_id=Depends(JWTBearer()),
+    user_service: UserService = Depends(UserService),
+):
+    user = await user_service.find_by_id(id=current_user_id)
+    await user_service.update_activation_flag(user=user, activated=True)
+
+
+@router.post("/resend-activation", summary="Resend User Activation Email")
+async def resend_account_activation_email(
+    email_address: str,
+    user_service: UserService = Depends(UserService),
+    email_service: IEmail = Depends(SendInBlue),
+):
+    user = await user_service.find_by_email(email=email_address)
+    await send_activation_email(user=user, email_service=email_service)
+
+
+async def send_activation_email(user: UserDTO, email_service: IEmail) -> None:
+    if user.activated:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=UserExceptions.ACCOUNT_ACTIVATED.value,
+        )
+    jwt = create_access_token(subject=user.id)
+    reset_url = f"{os.environ['FRONTEND_URL']}/activate?={jwt.access_token}"
+    params = {"first_name": user.first_name.capitalize(), "reset_url": reset_url}
+    email = EmailDTO(
+        recipients=[user.email],
+        template_id=SIBEmailTemplates.ACTIVATE_USER.value,
+        params=params,
+    )
+    await email_service.send(email=email)
