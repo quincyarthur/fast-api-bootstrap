@@ -27,6 +27,7 @@ async def create_user(
     created_user = await user_service.add_user(create_user=user)
     created_user = await user_service.exclude_password(user=created_user)
     await send_activation_email(user=created_user, email_service=email_service)
+    return created_user
 
 
 @router.get(
