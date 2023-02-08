@@ -9,5 +9,6 @@ class UserDTO:
     last_name: str
     email: str
     origin: str
+    activated: bool
     password: Optional[str] = None
     id: Optional[UUID] = None

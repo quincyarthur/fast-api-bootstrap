@@ -8,6 +8,7 @@ class CreateUserDTO:
     first_name: str
     last_name: str
     email: str
+    activated: bool = False
     password: Optional[str] = None
     origin: Optional[str] = None
 
