@@ -70,6 +70,19 @@ async def update_password(
     await user_service.update_password(user=user)
 
 
+@router.put(
+    "/activation",
+    summary="Update User Activation Flag",
+    description="Activate User using token sent in the activation email when the account was created",
+)
+async def update_activation_flag(
+    current_user_id=Depends(JWTBearer()),
+    user_service: UserService = Depends(UserService),
+):
+    user = await user_service.find_by_id(id=current_user_id)
+    await user_service.update_activation_flag(user=user, activated=True)
+
+
 async def send_activation_email(user: UserDTO, email_service: IEmail) -> None:
     jwt = create_access_token(subject=user.id)
     reset_url = f"{os.environ['FRONTEND_URL']}/activate?={jwt.access_token}"

@@ -49,3 +49,9 @@ class UserRepo:
             update(User).where(User.id == user.id).values(password=user.password)
         )
         return await self.db_session.commit()
+
+    async def update_activation_flag(self, user: UserDTO, activated: bool) -> None:
+        user = await self.db_session.execute(
+            update(User).where(User.id == user.id).values(activated=activated)
+        )
+        return await self.db_session.commit()
