@@ -27,6 +27,12 @@ class AuthService:
     async def signin(self, email: str, password: str) -> JWTToken:
         user = await self.user_service.find_by_email(email=email)
 
+        if not user.activated:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=AuthExceptions.NOT_ACTIVATED.value,
+            )
+
         if not self.pwd.verify(
             plain_text_password=password, hashed_password=user.password
         ):
