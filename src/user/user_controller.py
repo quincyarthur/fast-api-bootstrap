@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends
-from src.user.user_service import UserService, CreateUserDTO, UserDTO
+from fastapi import APIRouter, Depends, HTTPException, status
+from src.user.user_service import UserService, CreateUserDTO, UserDTO, UserExceptions
 from src.user.enum.user_origins import UserOrigins
 from src.auth.auth_service import AuthService
 from src.email.interface.email_interface import IEmail
@@ -84,6 +84,11 @@ async def update_activation_flag(
 
 
 async def send_activation_email(user: UserDTO, email_service: IEmail) -> None:
+    if user.activated:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=UserExceptions.ACCOUNT_ACTIVATED.value,
+        )
     jwt = create_access_token(subject=user.id)
     reset_url = f"{os.environ['FRONTEND_URL']}/activate?={jwt.access_token}"
     params = {"first_name": user.first_name.capitalize(), "reset_url": reset_url}
