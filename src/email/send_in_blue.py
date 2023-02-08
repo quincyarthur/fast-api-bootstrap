@@ -10,6 +10,7 @@ from enum import Enum
 
 class SIBEmailTemplates(Enum):
     FORGOT_PASSWORD = 1
+    ACTIVATE_USER = 2
 
 
 @dataclass

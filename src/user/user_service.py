@@ -60,3 +60,6 @@ class UserService:
 
     async def update_password(self, user: UserDTO) -> None:
         await self.user_repo.update_password(user=user)
+
+    async def update_activation_flag(self, user: UserDTO, activated: bool) -> None:
+        await self.user_repo.update_activation_flag(user=user, activated=activated)

@@ -1,5 +1,5 @@
 from db.config import Base
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
@@ -13,3 +13,4 @@ class User(Base):
     email = Column(String, nullable=False)
     password = Column(String, nullable=True)
     origin = Column(String, nullable=False)
+    activated = Column(Boolean, nullable=False, default=False)

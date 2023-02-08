@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends
-from src.user.user_service import UserService, CreateUserDTO, UserDTO
+from fastapi import APIRouter, Depends, HTTPException, status
+from src.user.user_service import UserService, CreateUserDTO, UserDTO, UserExceptions
 from src.user.enum.user_origins import UserOrigins
 from src.auth.auth_service import AuthService
 from src.email.interface.email_interface import IEmail
@@ -21,10 +21,13 @@ async def create_user(
     user: CreateUserDTO,
     user_service: UserService = Depends(UserService),
     response_model_exclude_none=True,
+    email_service: IEmail = Depends(SendInBlue),
 ):
     user.origin = UserOrigins.LOCAL.value
     created_user = await user_service.add_user(create_user=user)
-    return await user_service.exclude_password(user=created_user)
+    created_user = await user_service.exclude_password(user=created_user)
+    await send_activation_email(user=created_user, email_service=email_service)
+    return created_user
 
 
 @router.get(

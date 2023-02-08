@@ -29,6 +29,7 @@ class UserRepo:
             email=create_user.email,
             password=create_user.hashed_password,
             origin=create_user.origin,
+            activated=create_user.activated,
             id=None,
         )
         self.db_session.add(user)
@@ -46,5 +47,11 @@ class UserRepo:
     async def update_password(self, user: UserDTO) -> None:
         user = await self.db_session.execute(
             update(User).where(User.id == user.id).values(password=user.password)
+        )
+        return await self.db_session.commit()
+
+    async def update_activation_flag(self, user: UserDTO, activated: bool) -> None:
+        user = await self.db_session.execute(
+            update(User).where(User.id == user.id).values(activated=activated)
         )
         return await self.db_session.commit()
