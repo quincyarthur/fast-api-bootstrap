@@ -21,6 +21,7 @@ httpx = "*"
 itsdangerous = "*"
 sib-api-v3-sdk = "*"
 pytest = "*"
+pytest-trio = "*"
 
 [dev-packages]
 black = "*"
