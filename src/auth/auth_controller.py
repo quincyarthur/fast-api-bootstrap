@@ -10,6 +10,7 @@ from src.user.dto.user_dto import UserDTO
 from src.user.enum.user_origins import UserOrigins
 from src.user.enum.user_exceptions import UserExceptions
 from src.auth.auth_service import AuthService
+from src.user.interface.user_service_interface import IUserService
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -36,7 +37,7 @@ async def signin(
     description="Retrieves User Info from google, creates user if email does not exist and ultimately returns a JWT token",
 )
 async def google_auth(
-    request: Request, user_service: UserService = Depends(UserService)
+    request: Request, user_service: IUserService = Depends(UserService)
 ):
     token = await oauth.google.authorize_access_token(request)
     user_info = token["userinfo"]

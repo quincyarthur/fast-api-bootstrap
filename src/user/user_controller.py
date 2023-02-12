@@ -9,6 +9,7 @@ import os
 from utils.jwt import create_access_token
 from utils.password import Password
 from src.auth.auth_bearer import JWTBearer
+from src.user.interface.user_service_interface import IUserService
 
 router = APIRouter(
     prefix="/user",
@@ -19,7 +20,7 @@ router = APIRouter(
 @router.post("/", response_model=UserDTO, summary="Create user")
 async def create_user(
     user: CreateUserDTO,
-    user_service: UserService = Depends(UserService),
+    user_service: IUserService = Depends(UserService),
     response_model_exclude_none=True,
     email_service: IEmail = Depends(SendInBlue),
 ):
@@ -43,7 +44,7 @@ async def get_current_user(auth_service: AuthService = Depends(AuthService)):
 @router.post("/forgot-password", summary="Forgot Password")
 async def forgot_password(
     email_address: str,
-    user_service: UserService = Depends(UserService),
+    user_service: IUserService = Depends(UserService),
     email_service: IEmail = Depends(SendInBlue),
 ):
     user = await user_service.find_by_email(email=email_address)
@@ -62,7 +63,7 @@ async def forgot_password(
 async def update_password(
     user_password: str,
     current_user_id=Depends(JWTBearer()),
-    user_service: UserService = Depends(UserService),
+    user_service: IUserService = Depends(UserService),
     pwd: Password = Depends(Password),
 ):
     user = await user_service.find_by_id(id=current_user_id)
@@ -77,7 +78,7 @@ async def update_password(
 )
 async def update_activation_flag(
     current_user_id=Depends(JWTBearer()),
-    user_service: UserService = Depends(UserService),
+    user_service: IUserService = Depends(UserService),
 ):
     user = await user_service.find_by_id(id=current_user_id)
     await user_service.update_activation_flag(user=user, activated=True)
@@ -86,7 +87,7 @@ async def update_activation_flag(
 @router.post("/resend-activation", summary="Resend User Activation Email")
 async def resend_account_activation_email(
     email_address: str,
-    user_service: UserService = Depends(UserService),
+    user_service: IUserService = Depends(UserService),
     email_service: IEmail = Depends(SendInBlue),
 ):
     user = await user_service.find_by_email(email=email_address)

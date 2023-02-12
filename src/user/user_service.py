@@ -3,11 +3,12 @@ from src.user.user_repo import UserRepo, UserDTO, CreateUserDTO
 from fastapi import HTTPException, Depends, status
 from src.user.enum.user_exceptions import UserExceptions
 from email_validator import validate_email, EmailNotValidError
+from src.user.interface.user_service_repo_interface import IUserRepo
 
 
 @dataclass
 class UserService:
-    def __init__(self, user_repo: UserRepo = Depends(UserRepo)):
+    def __init__(self, user_repo: IUserRepo = Depends(UserRepo)):
         self.user_repo = user_repo
 
     async def find_by_id(self, id: str) -> UserDTO:
