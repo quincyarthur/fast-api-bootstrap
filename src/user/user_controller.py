@@ -10,6 +10,7 @@ from utils.jwt import create_access_token
 from utils.password import Password
 from src.auth.auth_bearer import JWTBearer
 from src.user.interface.user_service_interface import IUserService
+from src.auth.interface.auth_service_interface import IAuthService
 
 router = APIRouter(
     prefix="/user",
@@ -37,7 +38,7 @@ async def create_user(
     summary="Get Current User",
     description="Find the current user based on the JWT token provided",
 )
-async def get_current_user(auth_service: AuthService = Depends(AuthService)):
+async def get_current_user(auth_service: IAuthService = Depends(AuthService)):
     return await auth_service.get_current_user()
 
 

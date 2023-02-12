@@ -11,6 +11,7 @@ from src.user.enum.user_origins import UserOrigins
 from src.user.enum.user_exceptions import UserExceptions
 from src.auth.auth_service import AuthService
 from src.user.interface.user_service_interface import IUserService
+from src.auth.interface.auth_service_interface import IAuthService
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -23,7 +24,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 )
 async def signin(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    auth_service: AuthService = Depends(AuthService),
+    auth_service: IAuthService = Depends(AuthService),
 ) -> str:
     return await auth_service.signin(
         email=form_data.username, password=form_data.password
