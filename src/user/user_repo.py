@@ -5,10 +5,11 @@ from src.user.user_model import User
 from db.config import get_session, AsyncSession
 from sqlalchemy import select, update
 from fastapi import Depends
+from src.user.interface.user_service_repo_interface import IUserRepo
 
 
 @dataclass
-class UserRepo:
+class UserRepo(IUserRepo):
     def __init__(self, db: AsyncSession = Depends(get_session)) -> None:
         self.db_session = db
 

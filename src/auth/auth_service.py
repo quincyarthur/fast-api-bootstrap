@@ -9,12 +9,13 @@ from src.user.user_service import UserService, UserDTO
 from utils.jwt import create_access_token, JWTToken
 from utils.password import Password
 from src.user.interface.user_service_interface import IUserService
+from src.auth.interface.auth_service_interface import IAuthService
 
 local_user_oauth = OAuth2PasswordBearer(tokenUrl="auth/signin", scheme_name="JWT")
 
 
 @dataclass
-class AuthService:
+class AuthService(IAuthService):
     def __init__(
         self,
         user_service: IUserService = Depends(UserService),

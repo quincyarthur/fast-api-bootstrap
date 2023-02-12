@@ -4,10 +4,11 @@ from fastapi import HTTPException, Depends, status
 from src.user.enum.user_exceptions import UserExceptions
 from email_validator import validate_email, EmailNotValidError
 from src.user.interface.user_service_repo_interface import IUserRepo
+from src.user.interface.user_service_interface import IUserService
 
 
 @dataclass
-class UserService:
+class UserService(IUserService):
     def __init__(self, user_repo: IUserRepo = Depends(UserRepo)):
         self.user_repo = user_repo
 
