@@ -1,4 +1,4 @@
-from abc import ABC, abstractclassmethod, abstractproperty
+from abc import ABC, abstractclassmethod
 from src.user.dto.user_dto import UserDTO
 from src.user.dto.create_user_dto import CreateUserDTO
 
