@@ -34,7 +34,7 @@ class MockUserRepo(IUserRepo):
             return None
 
     async def add_user(self, create_user: CreateUserDTO) -> UserDTO:
-        pass
+        return UserDTO(**create_user)
 
     def to_user_dto(self, user: User) -> UserDTO:
         pass
