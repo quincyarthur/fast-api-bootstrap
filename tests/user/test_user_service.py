@@ -56,4 +56,29 @@ async def test_add_user_returns_exception_if_email_exists(setup: UserService):
 
 @pytest.mark.anyio
 async def test_exclude_password_returns_null_password(setup: UserService):
-    pass
+    user = UserDTO(
+        first_name="John",
+        last_name="Doe",
+        email="johndoe@gmail.com",
+        origin=UserOrigins.LOCAL.value,
+        activated=False,
+        password="secret",
+        id=1,
+    )
+    assert user.password is not None
+    user = await setup.exclude_password(user=user)
+    assert user.password is None
+
+
+@pytest.mark.anyio
+async def test_validate_email_returns_str_if_valid_email(setup: UserService):
+    email = "johndoe@gmail.com"
+    email = setup.valiate_email(email=email, check_deliverability=True)
+    assert type(email) is str
+
+
+@pytest.mark.anyio
+async def test_validate_email_throws_exception_if_not_valid_email(setup: UserService):
+    email = "johndoe@dfdsffafsafd.moc"
+    with pytest.raises(HTTPException) as exc:
+        validated_email = setup.valiate_email(email=email, check_deliverability=True)
