@@ -1,17 +1,10 @@
-from tests.user.mock_user_repo import MockUserRepo
-from src.user.user_service import UserService
 import pytest
+from src.user.user_service import UserService
 from src.user.dto.user_dto import UserDTO
 from fastapi import HTTPException
 from src.user.enum.user_exceptions import UserExceptions
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.enum.user_origins import UserOrigins
-
-
-@pytest.fixture()
-def setup_user_service_user_service() -> UserService:
-    user_service = UserService(user_repo=MockUserRepo())
-    yield user_service
 
 
 @pytest.mark.anyio
