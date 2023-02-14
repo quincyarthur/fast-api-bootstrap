@@ -10,6 +10,8 @@ from sqlalchemy.orm import sessionmaker
 from db.config import Base, get_session
 from src.user import user_controller
 from src.auth import auth_controller
+from src.email.send_in_blue import SendInBlue
+from tests.email.mock_email_service import MockEmailService
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_db.db"
 engine = create_engine(
@@ -64,6 +66,7 @@ def client(
             pass
 
     app.dependency_overrides[get_session] = _get_test_db
+    app.dependency_overrides[SendInBlue] = MockEmailService
     with TestClient(app) as client:
         yield client
 
