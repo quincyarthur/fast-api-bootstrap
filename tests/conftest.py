@@ -12,11 +12,14 @@ from src.user import user_controller
 from src.auth import auth_controller
 from src.email.send_in_blue import SendInBlue
 from tests.email.mock_email_service import MockEmailService
+from dotenv import load_dotenv
+import os
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_db.db"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+load_dotenv()
+
+
+TEST_DATABASE_URL = f"postgresql+asyncpg://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/TEST_{os.getenv('POSTGRES_DB').upper()}"
+engine = create_engine(TEST_DATABASE_URL)
 # Use connect_args parameter only with sqlite
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

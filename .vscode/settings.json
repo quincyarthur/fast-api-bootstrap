@@ -1,4 +1,7 @@
 {
-    "editor.formatOnSave": true,
-    "python.formatting.provider": "black"
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "none",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }
