@@ -3,8 +3,6 @@ import asyncio
 import pytest_asyncio
 from httpx import AsyncClient
 from main import app
-from tests.user.mock_user_repo import MockUserRepo
-from src.user.user_service import UserService
 from db.config import Base, engine
 from src.email.send_in_blue import SendInBlue
 from tests.email.mock_email_service import MockEmailService
@@ -20,7 +18,7 @@ def event_loop(request) -> Generator:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def async_client():
+async def async_client() -> Generator[AsyncClient, Any, Any]:
     app.dependency_overrides[SendInBlue] = MockEmailService
     async with AsyncClient(app=app, base_url=f"http://localhost:3000") as client:
         """
@@ -33,9 +31,3 @@ async def async_client():
 
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.drop_all)
-
-
-@pytest.fixture()
-def setup_user_service() -> UserService:
-    user_service = UserService(user_repo=MockUserRepo())
-    yield user_service
