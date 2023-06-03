@@ -1,5 +1,4 @@
 import pytest
-import json
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.enum.user_origins import UserOrigins
 
