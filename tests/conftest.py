@@ -26,9 +26,13 @@ async def async_client():
         """
         Create a fresh database on each test case.
         """
-        Base.metadata.create_all(engine)
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+
         yield client
-        Base.metadata.drop_all(engine)
+
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
 
 
 @pytest.fixture()
