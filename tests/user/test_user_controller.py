@@ -13,7 +13,7 @@ async def test_create_user(async_client):
         origin=UserOrigins.LOCAL.value,
         password="secret",
     )
-    response = async_client.post("/user/", json.dumps(user.__dict__))
+    response = await async_client.post("/user/", json=json.dumps(user.__dict__))
     assert response.status_code == 200
     assert response.json()["first_name"] == user.first_name
     assert response.json()["last_name"] == user.last_name
