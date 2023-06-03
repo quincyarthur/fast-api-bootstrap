@@ -1,9 +1,12 @@
+import pytest
 import json
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.enum.user_origins import UserOrigins
 
 
-def test_create_user(client):
+
+@pytest.mark.asyncio
+async def test_create_user(client):
     user = CreateUserDTO(
         first_name="john",
         last_name="doe",

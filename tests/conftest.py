@@ -1,82 +1,35 @@
 import pytest
+import asyncio
+import pytest_asyncio
+from httpx import AsyncClient
+from main import app
 from tests.user.mock_user_repo import MockUserRepo
 from src.user.user_service import UserService
-from typing import Any
-from typing import Generator
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from db.config import Base, get_session
-from src.user import user_controller
-from src.auth import auth_controller
+from db.config import Base, get_session, engine, AsyncSession
 from src.email.send_in_blue import SendInBlue
 from tests.email.mock_email_service import MockEmailService
-from dotenv import load_dotenv
-import os
+from typing import Any
+from typing import Generator
 
-load_dotenv()
+@pytest.fixture(scope="session")
+def event_loop(request) -> Generator:
+   loop = asyncio.get_event_loop_policy().new_event_loop()
+   yield loop
+   loop.close()
 
-
-TEST_DATABASE_URL = f"postgresql+asyncpg://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/TEST_{os.getenv('POSTGRES_DB').upper()}"
-engine = create_engine(TEST_DATABASE_URL)
-# Use connect_args parameter only with sqlite
-SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-def start_application():
-    app = FastAPI()
-    app.include_router(user_controller.router)
-    app.include_router(auth_controller.router)
-    return app
-
-
-@pytest.fixture(scope="function")
-def app() -> Generator[FastAPI, Any, None]:
+@pytest_asyncio.fixture(scope="function")
+async def async_client():
+   app.dependency_overrides[SendInBlue] = MockEmailService
+   async with AsyncClient(
+           app=app,
+           base_url=f"http://localhost:3000"
+   ) as client:
     """
-    Create a fresh database on each test case.
+        Create a fresh database on each test case.
     """
-    Base.metadata.create_all(engine)  # Create the tables.
-    _app = start_application()
-    yield _app
+    Base.metadata.create_all(engine) 
+    yield client
     Base.metadata.drop_all(engine)
-
-
-@pytest.fixture(scope="function")
-def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:
-    connection = engine.connect()
-    transaction = connection.begin()
-    session = SessionTesting(bind=connection)
-    yield session  # use the session in tests.
-    session.close()
-    transaction.rollback()
-    connection.close()
-
-
-@pytest.fixture(scope="function")
-def client(
-    app: FastAPI, db_session: SessionTesting
-) -> Generator[TestClient, Any, None]:
-    """
-    Create a new FastAPI TestClient that uses the `db_session` fixture to override
-    the `get_db` dependency that is injected into routes.
-    """
-
-    def _get_test_db():
-        try:
-            yield db_session
-        finally:
-            pass
-
-    app.dependency_overrides[get_session] = _get_test_db
-    app.dependency_overrides[SendInBlue] = MockEmailService
-    with TestClient(app) as client:
-        yield client
-
-
-@pytest.fixture
-def anyio_backend():
-    return "asyncio"
 
 
 @pytest.fixture()
