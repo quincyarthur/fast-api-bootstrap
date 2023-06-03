@@ -5,7 +5,7 @@ from httpx import AsyncClient
 from main import app
 from tests.user.mock_user_repo import MockUserRepo
 from src.user.user_service import UserService
-from db.config import Base, get_session, engine, AsyncSession
+from db.config import Base, engine
 from src.email.send_in_blue import SendInBlue
 from tests.email.mock_email_service import MockEmailService
 from typing import Any
