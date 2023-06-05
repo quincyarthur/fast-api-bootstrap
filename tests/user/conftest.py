@@ -14,13 +14,13 @@ async def user_repo():
 
 
 @pytest_asyncio.fixture(scope="function")
-async def add_user(user_repo: UserRepo):
-    user = user_repo.add_user(create_user=user)
+async def add_user(user_repo: UserRepo, user: UserDTO):
+    _ = user_repo.add_user(create_user=user)
     return user
 
 
 @pytest_asyncio.fixture(scope="function")
-async def activate_user(user_repo: UserRepo, add_user: UserDTO):
+async def activated_user(user_repo: UserRepo, add_user: UserDTO):
     user_repo.update_activation_flag(user=add_user, activated=True)
     add_user.activated = True
     return add_user
