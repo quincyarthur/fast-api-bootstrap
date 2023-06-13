@@ -9,11 +9,12 @@ from tests.email.mock_email_service import MockEmailService
 from typing import Any
 from typing import Generator
 
-from db.config import get_session
+from db.config import async_session
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.dto.user_dto import UserDTO
 from src.user.user_service import UserService
 from src.user.user_repo import UserRepo
+from src.user.enum.user_origins import UserOrigins
 from tests.user.mock_user_repo import MockUserRepo
 
 
@@ -47,17 +48,17 @@ User Fixtures
 
 @pytest_asyncio.fixture(scope="module")
 async def user_repo():
-    return UserRepo(db=get_session)
+    async with async_session() as session:
+        yield UserRepo(db=session)
 
 
 @pytest_asyncio.fixture(scope="function")
-async def add_user(user_repo: UserRepo, user: UserDTO):
-    _ = await user_repo.add_user(create_user=user)
-    return user
+async def add_user(user_repo: UserRepo, user: UserDTO) -> UserDTO:
+    return await user_repo.add_user(create_user=user)
 
 
 @pytest_asyncio.fixture(scope="function")
-async def activated_user(user_repo: UserRepo, add_user: UserDTO):
+async def activated_user(user_repo: UserRepo, add_user: UserDTO) -> UserDTO:
     await user_repo.update_activation_flag(user=add_user, activated=True)
     add_user.activated = True
     return add_user
@@ -70,6 +71,7 @@ async def user():
         last_name="Doe",
         email="johndoe@gmail.com",
         password="Welcome1",
+        origin=UserOrigins.LOCAL.value,
     )
 
 
