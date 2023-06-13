@@ -58,7 +58,7 @@ async def add_user(user_repo: UserRepo, user: UserDTO):
 
 @pytest_asyncio.fixture(scope="function")
 async def activated_user(user_repo: UserRepo, add_user: UserDTO):
-    user_repo.update_activation_flag(user=add_user, activated=True)
+    await user_repo.update_activation_flag(user=add_user, activated=True)
     add_user.activated = True
     return add_user
 
