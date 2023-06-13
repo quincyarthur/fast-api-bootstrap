@@ -52,7 +52,7 @@ async def user_repo():
 
 @pytest_asyncio.fixture(scope="function")
 async def add_user(user_repo: UserRepo, user: UserDTO):
-    _ = user_repo.add_user(create_user=user)
+    _ = await user_repo.add_user(create_user=user)
     return user
 
 
