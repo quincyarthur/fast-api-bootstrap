@@ -34,7 +34,7 @@ services:
       POSTGRES_HOST: ${TEST_POSTGRES_HOST}
       POSTGRES_PORT: ${TEST_POSTGRES_PORT}
     ports:
-      - 5433:5433
+      - 5433:5432
 
 volumes:
   postgres_data:
