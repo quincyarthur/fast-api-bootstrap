@@ -43,9 +43,9 @@ async def test_signin_throws_not_activated_exception(
 
 @pytest.mark.asyncio
 async def test_signin_throws_wrong_password_exception(
-    async_client: Generator[AsyncClient, Any, Any], add_user: UserDTO
+    async_client: Generator[AsyncClient, Any, Any], activated_user: UserDTO
 ):
-    data = {"username": add_user.email, "password": "wrong_password"}
+    data = {"username": activated_user.email, "password": "wrong_password"}
     response = await async_client.post(
         "/auth/signin",
         data=data,
