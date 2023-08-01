@@ -5,6 +5,7 @@ from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.dto.user_dto import UserDTO
 from fastapi import HTTPException
 from src.auth.enum.auth_exceptions import AuthExceptions
+from src.user.enum.user_exceptions import UserExceptions
 
 
 @pytest.mark.asyncio
@@ -45,6 +46,20 @@ async def test_signin_throws_wrong_password_exception(
 ):
     data = {"username": add_user.email, "password": "wrong_password"}
     with pytest.raises(HTTPException, match=AuthExceptions.WRONG_PASSWORD.value):
+        response = await async_client.post(
+            "/auth/signin",
+            data=data,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+
+
+@pytest.mark.asyncio
+async def test_signin_throws_email_not_found_exception(
+    async_client: Generator[AsyncClient, Any, Any],
+    user: CreateUserDTO,
+):
+    data = {"username": "wrong_email", "password": user.password}
+    with pytest.raises(HTTPException, match=UserExceptions.EMAIL_NOT_FOUND.value):
         response = await async_client.post(
             "/auth/signin",
             data=data,
