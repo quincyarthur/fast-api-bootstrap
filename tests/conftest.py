@@ -118,8 +118,7 @@ async def jwt(async_client, activated_user: UserDTO, user: CreateUserDTO) -> str
     data = {"username": activated_user.email, "password": user.password}
     response = await async_client.post(
         "/auth/signin",
-        data=json.dumps(data),
+        data=data,
         headers={"content-type": "application/x-www-form-urlencoded"},
     )
-    print(f"Response: {response}")
     return response.json().get("access_token")
