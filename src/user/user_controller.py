@@ -11,8 +11,9 @@ from utils.password import Password
 from src.auth.auth_bearer import JWTBearer
 from src.user.interface.user_service_interface import IUserService
 from src.auth.interface.auth_service_interface import IAuthService
-from utils.jwt import decode_token
+
 from fastapi.security import OAuth2PasswordBearer
+
 local_user_oauth = OAuth2PasswordBearer(tokenUrl="auth/signin")
 
 
@@ -20,6 +21,7 @@ router = APIRouter(
     prefix="/user",
     tags=["users"],
 )
+
 
 @router.post("/", response_model=UserDTO, summary="Create user")
 async def create_user(
@@ -43,7 +45,7 @@ async def create_user(
 )
 async def get_current_user(
     auth_service: IAuthService = Depends(AuthService),
-    token: str = Depends(local_user_oauth)
+    token: str = Depends(local_user_oauth),
 ):
     return await auth_service.get_current_user(token=token)
 

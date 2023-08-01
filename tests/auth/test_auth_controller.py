@@ -11,7 +11,7 @@ async def test_signin(
     activated_user: UserDTO,
     user: CreateUserDTO,
 ):
-    data =  {"username": activated_user.email, "password": user.password}
+    data = {"username": activated_user.email, "password": user.password}
     response = await async_client.post(
         "/auth/signin",
         data=data,
@@ -23,8 +23,9 @@ async def test_signin(
 
 
 @pytest.mark.asyncio
-async def test_me(async_client: Generator[AsyncClient, Any, Any], jwt: str, user: CreateUserDTO):
-    print(f"JWT: {jwt}")
+async def test_me(
+    async_client: Generator[AsyncClient, Any, Any], jwt: str, user: CreateUserDTO
+):
     response = await async_client.get(
         "/user/me",
         headers={"Authorization": f"Bearer {jwt}"},
@@ -36,4 +37,3 @@ async def test_me(async_client: Generator[AsyncClient, Any, Any], jwt: str, user
     assert response.json().get("email") == user.email
     assert response.json().get("activated") == True
     assert response.json().get("password") == None
-
