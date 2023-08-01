@@ -41,28 +41,30 @@ async def test_signin_throws_not_activated_exception(
     assert response.json().get("detail") == AuthExceptions.NOT_ACTIVATED.value
 
 
-# @pytest.mark.asyncio
-# async def test_signin_throws_wrong_password_exception(
-#     async_client: Generator[AsyncClient, Any, Any], add_user: UserDTO
-# ):
-#     data = {"username": add_user.email, "password": "wrong_password"}
-#     with pytest.raises(HTTPException, match=AuthExceptions.WRONG_PASSWORD.value):
-#         response = await async_client.post(
-#             "/auth/signin",
-#             data=data,
-#             headers={"Content-Type": "application/x-www-form-urlencoded"},
-#         )
+@pytest.mark.asyncio
+async def test_signin_throws_wrong_password_exception(
+    async_client: Generator[AsyncClient, Any, Any], add_user: UserDTO
+):
+    data = {"username": add_user.email, "password": "wrong_password"}
+    response = await async_client.post(
+        "/auth/signin",
+        data=data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    assert response.status_code == 400
+    assert response.json().get("detail") == AuthExceptions.WRONG_PASSWORD.value
 
 
-# @pytest.mark.asyncio
-# async def test_signin_throws_email_not_found_exception(
-#     async_client: Generator[AsyncClient, Any, Any],
-#     user: CreateUserDTO,
-# ):
-#     data = {"username": "wrong_email", "password": user.password}
-#     with pytest.raises(HTTPException, match=UserExceptions.EMAIL_NOT_FOUND.value):
-#         response = await async_client.post(
-#             "/auth/signin",
-#             data=data,
-#             headers={"Content-Type": "application/x-www-form-urlencoded"},
-#         )
+@pytest.mark.asyncio
+async def test_signin_throws_email_not_found_exception(
+    async_client: Generator[AsyncClient, Any, Any],
+    user: CreateUserDTO,
+):
+    data = {"username": "wrong_email", "password": user.password}
+    response = await async_client.post(
+        "/auth/signin",
+        data=data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    assert response.status_code == 400
+    assert response.json().get("detail") == UserExceptions.EMAIL_NOT_FOUND.value
