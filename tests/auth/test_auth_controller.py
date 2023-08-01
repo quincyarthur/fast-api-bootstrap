@@ -37,3 +37,16 @@ async def test_signin_throws_not_activated_exception(
             data=data,
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
+
+
+@pytest.mark.asyncio
+async def test_signin_throws_wrong_password_exception(
+    async_client: Generator[AsyncClient, Any, Any], add_user: UserDTO
+):
+    data = {"username": add_user.email, "password": "wrong_password"}
+    with pytest.raises(HTTPException, match=AuthExceptions.WRONG_PASSWORD.value):
+        response = await async_client.post(
+            "/auth/signin",
+            data=data,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
