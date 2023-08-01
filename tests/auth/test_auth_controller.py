@@ -3,6 +3,8 @@ from httpx import AsyncClient
 import pytest
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.dto.user_dto import UserDTO
+from fastapi import HTTPException
+from src.auth.enum.auth_exceptions import AuthExceptions
 
 
 @pytest.mark.asyncio
@@ -20,3 +22,18 @@ async def test_signin(
     assert response.status_code == 200
     assert type(response.json().get("access_token")) is str
     assert response.json().get("token_type") == "bearer"
+
+
+@pytest.mark.asyncio
+async def test_signin_throws_not_activated_exception(
+    async_client: Generator[AsyncClient, Any, Any],
+    add_user: UserDTO,
+    user: CreateUserDTO,
+):
+    data = {"username": add_user.email, "password": user.password}
+    with pytest.raises(HTTPException, match=AuthExceptions.NOT_ACTIVATED.value):
+        response = await async_client.post(
+            "/auth/signin",
+            data=data,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
