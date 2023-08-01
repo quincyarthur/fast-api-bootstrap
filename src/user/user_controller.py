@@ -77,9 +77,8 @@ async def update_password(
     pwd: Password = Depends(Password),
 ):
     current_user = await auth_service.get_current_user(token=token)
-    user = await user_service.find_by_id(id=current_user.id)
-    user.password = pwd.hash(password=user_password)
-    await user_service.update_password(user=user)
+    current_user.password = pwd.hash(password=user_password)
+    await user_service.update_password(user=current_user)
 
 
 @router.put(
@@ -93,8 +92,7 @@ async def update_activation_flag(
     user_service: IUserService = Depends(UserService),
 ):
     current_user = await auth_service.get_current_user(token=token)
-    user = await user_service.find_by_id(id=current_user.id)
-    await user_service.update_activation_flag(user=user, activated=True)
+    await user_service.update_activation_flag(user=current_user, activated=True)
 
 
 @router.post("/resend-activation", summary="Resend User Activation Email")
