@@ -41,16 +41,16 @@ async def google_auth(
     request: Request, user_service: IUserService = Depends(UserService)
 ):
     token = await oauth.google.authorize_access_token(request)
-    user_info = token["userinfo"]
+    user_info = token.get("userinfo")
     user: UserDTO = None
     try:
-        user = await user_service.find_by_email(email=user_info["email"])
+        user = await user_service.find_by_email(email=user_info.get("email"))
     except HTTPException as e:
         if e.detail == UserExceptions.EMAIL_NOT_FOUND.value:
             create_user = CreateUserDTO(
-                first_name=user_info["given_name"],
-                last_name=user_info["family_name"],
-                email=user_info["email"],
+                first_name=user_info.get("given_name"),
+                last_name=user_info.get("family_name"),
+                email=user_info.get("email"),
             )
             create_user.origin = UserOrigins.GOOGLE.value
             user = await user_service.add_user(create_user=create_user)
