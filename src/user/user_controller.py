@@ -11,12 +11,15 @@ from utils.password import Password
 from src.auth.auth_bearer import JWTBearer
 from src.user.interface.user_service_interface import IUserService
 from src.auth.interface.auth_service_interface import IAuthService
+from utils.jwt import decode_token
+from fastapi.security import OAuth2PasswordBearer
+local_user_oauth = OAuth2PasswordBearer(tokenUrl="auth/signin")
+
 
 router = APIRouter(
     prefix="/user",
     tags=["users"],
 )
-
 
 @router.post("/", response_model=UserDTO, summary="Create user")
 async def create_user(
@@ -38,8 +41,11 @@ async def create_user(
     summary="Get Current User",
     description="Find the current user based on the JWT token provided",
 )
-async def get_current_user(auth_service: IAuthService = Depends(AuthService)):
-    return await auth_service.get_current_user()
+async def get_current_user(
+    auth_service: IAuthService = Depends(AuthService),
+    token: str = Depends(local_user_oauth)
+):
+    return await auth_service.get_current_user(token=token)
 
 
 @router.post("/forgot-password", summary="Forgot Password")
@@ -63,11 +69,13 @@ async def forgot_password(
 @router.put("/password", summary="Update User Password")
 async def update_password(
     user_password: str,
-    current_user_id=Depends(JWTBearer()),
+    token: str = Depends(local_user_oauth),
+    auth_service: IAuthService = Depends(AuthService),
     user_service: IUserService = Depends(UserService),
     pwd: Password = Depends(Password),
 ):
-    user = await user_service.find_by_id(id=current_user_id)
+    current_user = await auth_service.get_current_user(token=token)
+    user = await user_service.find_by_id(id=current_user.id)
     user.password = pwd.hash(password=user_password)
     await user_service.update_password(user=user)
 
@@ -78,10 +86,12 @@ async def update_password(
     description="Activate User using token sent in the activation email when the account was created",
 )
 async def update_activation_flag(
-    current_user_id=Depends(JWTBearer()),
+    token: str = Depends(local_user_oauth),
+    auth_service: IAuthService = Depends(AuthService),
     user_service: IUserService = Depends(UserService),
 ):
-    user = await user_service.find_by_id(id=current_user_id)
+    current_user = await auth_service.get_current_user(token=token)
+    user = await user_service.find_by_id(id=current_user.id)
     await user_service.update_activation_flag(user=user, activated=True)
 
 

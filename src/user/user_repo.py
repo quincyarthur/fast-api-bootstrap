@@ -20,7 +20,7 @@ class UserRepo(IUserRepo):
 
     async def find_by_email(self, email: str) -> UserDTO:
         user = await self.db_session.execute(select(User).where(User.email == email))
-        user = user.scalar_one_or_none()
+        user = user.scalar()
         return self.to_user_dto(user=user)
 
     async def add_user(self, create_user: CreateUserDTO) -> UserDTO:

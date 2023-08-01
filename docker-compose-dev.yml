@@ -7,6 +7,7 @@ services:
     ports:
       - 3000:3000
       - 5678:5678
+      - 8000:8000
     depends_on:
       - db
 

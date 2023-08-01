@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 from utils.jwt import decode_token
 from src.auth.enum.auth_exceptions import AuthExceptions
 from jose.exceptions import JWTError
@@ -11,20 +10,12 @@ from utils.password import Password
 from src.user.interface.user_service_interface import IUserService
 from src.auth.interface.auth_service_interface import IAuthService
 
-local_user_oauth = OAuth2PasswordBearer(tokenUrl="auth/signin", scheme_name="JWT")
-
 
 @dataclass
 class AuthService(IAuthService):
-    def __init__(
-        self,
-        user_service: IUserService = Depends(UserService),
-        token: str = Depends(local_user_oauth),
-        pwd: Password = Depends(Password),
-    ) -> None:
-        self.user_service = user_service
-        self.token = token
-        self.pwd = pwd
+
+    user_service: IUserService = Depends(UserService)
+    pwd: Password = Depends(Password)
 
     async def signin(self, email: str, password: str) -> JWTToken:
         user = await self.user_service.find_by_email(email=email)
@@ -45,9 +36,9 @@ class AuthService(IAuthService):
 
         return create_access_token(user.id)
 
-    async def get_current_user(self) -> UserDTO:
+    async def get_current_user(self, token: str) -> UserDTO:
         try:
-            payload = decode_token(token=self.token)
+            payload = decode_token(token=token)
 
             # invalidate token if exp is not found in payload
             exp = (
