@@ -7,6 +7,8 @@ from fastapi import HTTPException
 from src.auth.enum.auth_exceptions import AuthExceptions
 from src.user.enum.user_exceptions import UserExceptions
 from src.auth.config import oauth
+from src.user.user_service import UserService
+from fastapi import HTTPException, status
 
 
 @pytest.mark.asyncio
@@ -116,11 +118,13 @@ async def test_google_auth_creates_user_and_generates_token_when_email_not_found
 
 
 @pytest.mark.asyncio
-async def test_google_auth_rethrows_other_http_exceptions(
+async def test_google_auth_rethrows_other_http_exceptions_when_not_email_not_found(
     async_client: Generator[AsyncClient, Any, Any],
     user: CreateUserDTO,
     monkeypatch: Generator[pytest.MonkeyPatch, Any, Any],
 ):
+    exception_message = "Other Exception"
+
     async def mock_token(*args, **kargs):
         return {
             "userinfo": {
@@ -131,11 +135,12 @@ async def test_google_auth_rethrows_other_http_exceptions(
         }
 
     async def mock_find_by_email(*args, **kargs):
-        raise HTTPException("Other Exception")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=exception_message
+        )
 
     monkeypatch.setattr(oauth.google, "authorize_access_token", mock_token)
-    monkeypatch.setattr("src.user.user_service.find_by_email", mock_find_by_email)
+    monkeypatch.setattr(UserService, "find_by_email", mock_find_by_email)
     response = await async_client.get("/auth/google")
-    assert response.status_code == 200
-    assert response.json().get("token_type") == "bearer"
-    assert type(response.json().get("access_token")) is str
+    assert response.status_code == 400
+    assert response.json().get("detail") == exception_message
