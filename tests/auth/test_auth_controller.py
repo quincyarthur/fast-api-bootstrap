@@ -79,7 +79,7 @@ async def test_google_auth_creates_user_and_generates_token_when_email_found(
     add_user: UserDTO,
     monkeypatch: Generator[pytest.MonkeyPatch, Any, Any],
 ):
-    async def mockreturn(*args, **kargs):
+    async def mock_return(*args, **kargs):
         return {
             "userinfo": {
                 "email": add_user.email,
@@ -88,7 +88,7 @@ async def test_google_auth_creates_user_and_generates_token_when_email_found(
             }
         }
 
-    monkeypatch.setattr(oauth.google, "authorize_access_token", mockreturn)
+    monkeypatch.setattr(oauth.google, "authorize_access_token", mock_return)
     response = await async_client.get("/auth/google")
     assert response.status_code == 200
     assert response.json().get("token_type") == "bearer"
@@ -101,7 +101,7 @@ async def test_google_auth_creates_user_and_generates_token_when_email_not_found
     user: CreateUserDTO,
     monkeypatch: Generator[pytest.MonkeyPatch, Any, Any],
 ):
-    async def mockreturn(*args, **kargs):
+    async def mock_return(*args, **kargs):
         return {
             "userinfo": {
                 "email": user.email,
@@ -110,7 +110,7 @@ async def test_google_auth_creates_user_and_generates_token_when_email_not_found
             }
         }
 
-    monkeypatch.setattr(oauth.google, "authorize_access_token", mockreturn)
+    monkeypatch.setattr(oauth.google, "authorize_access_token", mock_return)
     response = await async_client.get("/auth/google")
     assert response.status_code == 200
     assert response.json().get("token_type") == "bearer"
