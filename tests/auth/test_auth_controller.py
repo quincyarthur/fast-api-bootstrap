@@ -113,3 +113,29 @@ async def test_google_auth_creates_user_and_generates_token_when_email_not_found
     assert response.status_code == 200
     assert response.json().get("token_type") == "bearer"
     assert type(response.json().get("access_token")) is str
+
+
+@pytest.mark.asyncio
+async def test_google_auth_rethrows_other_http_exceptions(
+    async_client: Generator[AsyncClient, Any, Any],
+    user: CreateUserDTO,
+    monkeypatch: Generator[pytest.MonkeyPatch, Any, Any],
+):
+    async def mock_token(*args, **kargs):
+        return {
+            "userinfo": {
+                "email": user.email,
+                "given_name": user.first_name,
+                "family_name": user.last_name,
+            }
+        }
+
+    async def mock_find_by_email(*args, **kargs):
+        raise HTTPException("Other Exception")
+
+    monkeypatch.setattr(oauth.google, "authorize_access_token", mock_token)
+    monkeypatch.setattr("src.user.user_service.find_by_email", mock_find_by_email)
+    response = await async_client.get("/auth/google")
+    assert response.status_code == 200
+    assert response.json().get("token_type") == "bearer"
+    assert type(response.json().get("access_token")) is str
