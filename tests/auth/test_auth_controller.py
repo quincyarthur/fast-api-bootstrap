@@ -90,5 +90,4 @@ async def test_google_auth_creates_user_and_generates_token_when_email_not_found
     response = await async_client.get("/auth/google")
     assert response.status_code == 200
     assert response.json().get("token_type") == "bearer"
-    print(f"Token: {response.json().get('access_token')}")
     assert type(response.json().get("access_token")) is str
