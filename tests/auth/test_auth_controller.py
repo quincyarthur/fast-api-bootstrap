@@ -6,6 +6,7 @@ from src.user.dto.user_dto import UserDTO
 from fastapi import HTTPException
 from src.auth.enum.auth_exceptions import AuthExceptions
 from src.user.enum.user_exceptions import UserExceptions
+from src.auth.config import oauth
 
 
 @pytest.mark.asyncio
@@ -68,3 +69,26 @@ async def test_signin_throws_email_not_found_exception(
     )
     assert response.status_code == 400
     assert response.json().get("detail") == UserExceptions.EMAIL_NOT_FOUND.value
+
+
+@pytest.mark.asyncio
+async def test_google_auth_creates_user_and_generates_token_when_email_not_found_exception(
+    async_client: Generator[AsyncClient, Any, Any],
+    user: CreateUserDTO,
+    monkeypatch: Generator[pytest.MonkeyPatch, Any, Any],
+):
+    async def mockreturn(*args, **kargs):
+        return {
+            "userinfo": {
+                "email": user.email,
+                "given_name": user.first_name,
+                "family_name": user.last_name,
+            }
+        }
+
+    monkeypatch.setattr(oauth.google, "authorize_access_token", mockreturn)
+    response = await async_client.get("/auth/google")
+    assert response.status_code == 200
+    assert response.json().get("token_type") == "bearer"
+    print(f"Token: {response.json().get('access_token')}")
+    assert type(response.json().get("access_token")) is str
