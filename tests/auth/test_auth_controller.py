@@ -72,7 +72,29 @@ async def test_signin_throws_email_not_found_exception(
 
 
 @pytest.mark.asyncio
-async def test_google_auth_creates_user_and_generates_token_when_email_not_found_exception(
+async def test_google_auth_creates_user_and_generates_token_when_email_found(
+    async_client: Generator[AsyncClient, Any, Any],
+    add_user: UserDTO,
+    monkeypatch: Generator[pytest.MonkeyPatch, Any, Any],
+):
+    async def mockreturn(*args, **kargs):
+        return {
+            "userinfo": {
+                "email": add_user.email,
+                "given_name": add_user.first_name,
+                "family_name": add_user.last_name,
+            }
+        }
+
+    monkeypatch.setattr(oauth.google, "authorize_access_token", mockreturn)
+    response = await async_client.get("/auth/google")
+    assert response.status_code == 200
+    assert response.json().get("token_type") == "bearer"
+    assert type(response.json().get("access_token")) is str
+
+
+@pytest.mark.asyncio
+async def test_google_auth_creates_user_and_generates_token_when_email_not_found(
     async_client: Generator[AsyncClient, Any, Any],
     user: CreateUserDTO,
     monkeypatch: Generator[pytest.MonkeyPatch, Any, Any],
