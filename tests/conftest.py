@@ -15,7 +15,6 @@ from db.config import (
     get_session,
     create_async_engine,
     modules,
-    TEST_DATABASE_URL,
     sessionmaker,
     AsyncSession,
 )
@@ -25,6 +24,9 @@ from src.user.user_service import UserService
 from src.user.user_repo import UserRepo
 from src.user.enum.user_origins import UserOrigins
 from tests.user.mock_user_repo import MockUserRepo
+import os
+
+TEST_DATABASE_URL = f"postgresql+asyncpg://{os.getenv('TEST_POSTGRES_USER')}:{os.getenv('TEST_POSTGRES_PASSWORD')}@{os.getenv('TEST_POSTGRES_HOST')}:{os.getenv('TEST_POSTGRES_PORT')}/{os.getenv('TEST_POSTGRES_DB')}"
 
 test_engine = create_async_engine(TEST_DATABASE_URL, future=True, echo=True)
 
@@ -42,7 +44,6 @@ def event_loop(request) -> Generator:
 
 async def override_db():
     try:
-        print(f"Test: {test_engine.url}")
         db = test_async_session()
         yield db
     finally:
@@ -58,13 +59,11 @@ async def async_client() -> Generator[AsyncClient, Any, Any]:
         Create a fresh database on each test case.
         """
         async with test_engine.begin() as conn:
-            print("creating db...")
             await conn.run_sync(Base.metadata.create_all)
 
         yield client
 
         async with test_engine.begin() as conn:
-            print("dropping db...")
             await conn.run_sync(Base.metadata.drop_all)
 
 

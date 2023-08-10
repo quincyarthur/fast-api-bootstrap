@@ -6,14 +6,10 @@ from sys import modules
 
 load_dotenv()
 
-TEST_DATABASE_URL = f"postgresql+asyncpg://{os.getenv('TEST_POSTGRES_USER')}:{os.getenv('TEST_POSTGRES_PASSWORD')}@{os.getenv('TEST_POSTGRES_HOST')}:{os.getenv('TEST_POSTGRES_PORT')}/{os.getenv('TEST_POSTGRES_DB')}"
 DATABASE_URL = f"postgresql+asyncpg://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}"
 
-engine = create_async_engine(
-    TEST_DATABASE_URL if "pytest" in modules else DATABASE_URL, future=True, echo=True
-)
+engine = create_async_engine(DATABASE_URL, future=True, echo=True)
 
-print(f"My Engine 1: {engine.url}")
 async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 Base = declarative_base()
 
