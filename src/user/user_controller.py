@@ -8,7 +8,6 @@ from src.email.send_in_blue import SendInBlue, SIBEmailTemplates
 import os
 from utils.jwt import create_access_token
 from utils.password import Password
-from src.auth.auth_bearer import JWTBearer
 from src.user.interface.user_service_interface import IUserService
 from src.auth.interface.auth_service_interface import IAuthService
 
