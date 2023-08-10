@@ -64,8 +64,3 @@ async def test_me(
     assert response.json().get("email") == user.email
     assert response.json().get("activated") == True
     assert response.json().get("password") == None
-
-
-# @pytest.mark.asyncio
-# async def test_get_current_user(async_client, add_user):
-#     response = await async_client.post("/user/", json=add_user)
