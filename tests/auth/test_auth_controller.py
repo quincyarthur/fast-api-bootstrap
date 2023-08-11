@@ -128,19 +128,16 @@ async def test_google_auth_rethrows_other_http_exceptions_when_not_email_not_fou
     async def mock_token(*args, **kargs):
         return {
             "userinfo": {
-                "email": user.email,
+                "email": "wrong_email",
                 "given_name": user.first_name,
                 "family_name": user.last_name,
             }
         }
 
-    async def mock_find_by_email(*args, **kargs):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail=exception_message
-        )
-
     monkeypatch.setattr(oauth.google, "authorize_access_token", mock_token)
-    monkeypatch.setattr(UserService, "find_by_email", mock_find_by_email)
     response = await async_client.get("/auth/google")
     assert response.status_code == 400
-    assert response.json().get("detail") == exception_message
+    assert (
+        response.json().get("detail")
+        == "The email address is not valid. It must have exactly one @-sign."
+    )
