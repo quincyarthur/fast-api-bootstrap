@@ -36,7 +36,10 @@ async def test_create_user_throws_invalid_email_syntax_exception(
     user.email = "wrong_email"
     response = await async_client.post("/user/", json=user.__dict__)
     assert response.status_code == 400
-    assert ("one @-sign") in response.json().get("detail")
+    assert (
+        response.json().get("detail")
+        == "The email address is not valid. It must have exactly one @-sign."
+    )
 
 
 @pytest.mark.asyncio
