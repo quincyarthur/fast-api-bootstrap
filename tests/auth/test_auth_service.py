@@ -2,7 +2,7 @@ from typing import Any, Generator
 from fastapi import HTTPException
 import pytest
 from src.user.dto.user_dto import UserDTO
-import utils.jwt
+from jose import jwt
 from src.auth.auth_service import AuthService
 from src.auth.enum.auth_exceptions import AuthExceptions
 from src.user.user_service import UserService
@@ -16,7 +16,7 @@ async def test_get_current_user_returns_token_expired_exception_if_no_token_expi
         return {"exp": None}
 
     with pytest.raises(HTTPException) as exc:
-        monkeypatch.setattr(utils.jwt, "decode_token", mock_return)
+        monkeypatch.setattr(jwt, "decode", mock_return)
         await AuthService().get_current_user(token="")
     assert str(exc.value.detail) == AuthExceptions.TOKEN_EXPIRED.value
 

@@ -13,7 +13,6 @@ from src.auth.interface.auth_service_interface import IAuthService
 
 @dataclass
 class AuthService(IAuthService):
-
     user_service: IUserService = Depends(UserService)
     pwd: Password = Depends(Password)
 
@@ -42,7 +41,7 @@ class AuthService(IAuthService):
 
             # invalidate token if exp is not found in payload
             exp = (
-                datetime.now() - timedelta(minutes=1)
+                (datetime.now() - timedelta(minutes=1)).timestamp()
                 if not payload.get("exp")
                 else payload.get("exp")
             )
