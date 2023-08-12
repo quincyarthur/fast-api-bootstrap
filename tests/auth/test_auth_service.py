@@ -18,7 +18,7 @@ async def test_get_current_user_returns_token_expired_exception_if_no_token_expi
     with pytest.raises(HTTPException) as exc:
         monkeypatch.setattr(utils.jwt, "decode_token", mock_return)
         await AuthService().get_current_user(token="")
-        assert str(exc.value) == AuthExceptions.TOKEN_EXPIRED.value
+    assert str(exc.value.detail) == AuthExceptions.TOKEN_EXPIRED.value
 
 
 async def test_get_current_user_returns_invalid_token_exception_if_invalid_token(
@@ -26,7 +26,7 @@ async def test_get_current_user_returns_invalid_token_exception_if_invalid_token
 ):
     with pytest.raises(HTTPException) as exc:
         await AuthService().get_current_user(token="invalid token")
-        assert str(exc.value) == AuthExceptions.INVALID_TOKEN.value
+    assert str(exc.value.detail) == AuthExceptions.INVALID_TOKEN.value
 
 
 async def test_signin_returns_not_activated_exception_if_user_not_activated(
@@ -43,7 +43,7 @@ async def test_signin_returns_not_activated_exception_if_user_not_activated(
         await AuthService(user_service=setup_user_service).signin(
             email=test_user.email, password=test_user.password
         )
-        assert str(exc.value) == AuthExceptions.NOT_ACTIVATED.value
+    assert str(exc.value.detail) == AuthExceptions.NOT_ACTIVATED.value
 
 
 async def test_signin_returns_wrong_password_exception(

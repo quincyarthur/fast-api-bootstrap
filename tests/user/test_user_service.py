@@ -19,7 +19,7 @@ async def test_find_by_id_returns_exception_if_not_found(
 ):
     with pytest.raises(HTTPException) as exc:
         await setup_user_service.find_by_id(id=2)
-        assert str(exc.value) == UserExceptions.ID_NOT_FOUND.value
+    assert str(exc.value.detail) == UserExceptions.ID_NOT_FOUND.value
 
 
 async def test_find_by_email_returns_UserDTO_if_found(
@@ -34,7 +34,7 @@ async def test_find_by_email_returns_exception_if_not_found(
 ):
     with pytest.raises(HTTPException) as exc:
         await setup_user_service.find_by_email(email="unknown@gmail.com")
-        assert str(exc.value) == UserExceptions.EMAIL_NOT_FOUND.value
+    assert str(exc.value.detail) == UserExceptions.EMAIL_NOT_FOUND.value
 
 
 async def test_add_user_returns_exception_if_email_exists(
@@ -49,7 +49,7 @@ async def test_add_user_returns_exception_if_email_exists(
     )
     with pytest.raises(HTTPException) as exc:
         await setup_user_service.add_user(create_user=create_user)
-        assert str(exc.value) == UserExceptions.EMAIL_EXISTS.value
+    assert str(exc.value.detail) == UserExceptions.EMAIL_EXISTS.value
 
 
 async def test_exclude_password_returns_null_password(
