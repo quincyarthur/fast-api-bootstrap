@@ -101,6 +101,17 @@ async def user():
     )
 
 
+@pytest_asyncio.fixture(scope="function")
+async def test_user():
+    return UserDTO(
+        first_name="John",
+        last_name="Doe",
+        email="johndoe@gmail.com",
+        origin=UserOrigins.LOCAL.value,
+        activated=False,
+    )
+
+
 @pytest.fixture()
 def setup_user_service() -> UserService:
     user_service = UserService(user_repo=MockUserRepo())
