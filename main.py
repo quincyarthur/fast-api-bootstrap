@@ -3,8 +3,6 @@ from src.user import user_controller
 from src.auth import auth_controller
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-import asyncio
-import aio_pika
 from crontab import CronTab
 
 ALLOWED_HOSTS = ["*"]
