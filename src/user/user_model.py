@@ -1,7 +1,8 @@
 from db.config import Base
-from sqlalchemy import Column, String, Boolean
+from sqlalchemy import Column, String, Boolean, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
+from datetime import datetime
 
 
 class User(Base):
@@ -14,3 +15,4 @@ class User(Base):
     password = Column(String, nullable=True)
     origin = Column(String, nullable=False)
     activated = Column(Boolean, nullable=False, default=False)
+    inserted_date = Column(DateTime, nullable=False, default=datetime.utcnow())

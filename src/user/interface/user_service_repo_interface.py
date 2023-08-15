@@ -2,6 +2,7 @@ from abc import ABC, abstractclassmethod
 from src.user.dto.user_dto import UserDTO
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.user_model import User
+from typing import List
 
 
 class IUserRepo(ABC):
@@ -27,4 +28,8 @@ class IUserRepo(ABC):
 
     @abstractclassmethod
     async def update_activation_flag(self, user: UserDTO, activated: bool) -> None:
+        pass
+
+    @abstractclassmethod
+    async def find_non_activated_accounts(self) -> List[UserDTO]:
         pass

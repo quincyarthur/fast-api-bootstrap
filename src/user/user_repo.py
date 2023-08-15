@@ -6,6 +6,8 @@ from db.config import get_session, AsyncSession
 from sqlalchemy import select, update
 from fastapi import Depends
 from src.user.interface.user_service_repo_interface import IUserRepo
+from typing import List
+from datetime import datetime
 
 
 @dataclass
@@ -56,3 +58,12 @@ class UserRepo(IUserRepo):
             update(User).where(User.id == user.id).values(activated=activated)
         )
         return await self.db_session.commit()
+
+    async def find_non_activated_accounts(self, expiration: datetime) -> List[UserDTO]:
+        expired_users = await self.db_session.execute(
+            select(User).where(
+                User.activated == False and User.inserted_date <= expiration
+            )
+        ).all()
+
+        return [self.to_user_dto(user=user) for user in expired_users]
