@@ -4,7 +4,7 @@ from pika import BlockingConnection, ConnectionParameters
 import json
 
 
-async def add_non_activated_accounts(user_repo: IUserRepo = UserRepo()):
+async def add_non_activated_accounts_to_queue(user_repo: IUserRepo = UserRepo()):
     expiration = datetime.utcnow() - timedelta(hours=24)
     expired_users = user_repo.find_non_activated_accounts(expiration=expiration)
     connection = BlockingConnection(ConnectionParameters("localhost"))

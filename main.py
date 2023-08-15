@@ -36,7 +36,7 @@ async def startup():
 
 my_cron = CronTab(user="root")
 job_add_non_activated_accounts = my_cron.new(
-    command="python /app/src/background_jobs/add_non_activated_accounts.py"
+    command="python /app/src/background_jobs/add_non_activated_accounts_to_queue.py"
 )
 job_add_non_activated_accounts.hour.every(1)
 my_cron.write()
