@@ -3,6 +3,8 @@ from src.user import user_controller
 from src.auth import auth_controller
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+import asyncio
+import aio_pika
 
 ALLOWED_HOSTS = ["*"]
 
@@ -20,6 +22,16 @@ app.add_middleware(
 
 app.include_router(user_controller.router)
 app.include_router(auth_controller.router)
+
+
+@app.on_event("startup")
+async def startup():
+    loop = asyncio.get_event_loop()
+    connection = await aio_pika.connect("amqp://guest:guest@localhost/", loop=loop)
+    channel = await connection.channel()
+    not_activated_queue = await channel.declare_queue("not-activated")
+    await not_activated_queue.consume()
+
 
 @app.get("/")
 async def root():
