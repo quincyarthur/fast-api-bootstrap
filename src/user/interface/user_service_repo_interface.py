@@ -3,6 +3,7 @@ from src.user.dto.user_dto import UserDTO
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.user_model import User
 from typing import List
+from datetime import datetime
 
 
 class IUserRepo(ABC):
@@ -31,5 +32,5 @@ class IUserRepo(ABC):
         pass
 
     @abstractclassmethod
-    async def find_non_activated_accounts(self) -> List[UserDTO]:
+    async def find_non_activated_accounts(self, expiration: datetime) -> List[UserDTO]:
         pass
