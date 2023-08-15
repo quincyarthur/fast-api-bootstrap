@@ -3,7 +3,7 @@ from src.user.dto.user_dto import UserDTO
 from src.user.dto.create_user_dto import CreateUserDTO
 from src.user.user_model import User
 from db.config import get_session, AsyncSession
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 from fastapi import Depends
 from src.user.interface.user_service_repo_interface import IUserRepo
 from typing import List
@@ -59,11 +59,9 @@ class UserRepo(IUserRepo):
         )
         return await self.db_session.commit()
 
-    async def find_non_activated_accounts(self, expiration: datetime) -> List[UserDTO]:
-        expired_users = await self.db_session.execute(
-            select(User).where(
+    async def remove_expired_user_accounts(self, expiration: datetime) -> None:
+        return await self.db_session.execute(
+            delete(User).where(
                 User.activated == False and User.inserted_date <= expiration
             )
-        ).all()
-
-        return [self.to_user_dto(user=user) for user in expired_users]
+        )

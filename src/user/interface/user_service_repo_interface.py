@@ -32,5 +32,5 @@ class IUserRepo(ABC):
         pass
 
     @abstractclassmethod
-    async def find_non_activated_accounts(self, expiration: datetime) -> List[UserDTO]:
+    async def remove_expired_user_accounts(self) -> None:
         pass

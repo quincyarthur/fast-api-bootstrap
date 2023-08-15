@@ -25,18 +25,9 @@ app.include_router(user_controller.router)
 app.include_router(auth_controller.router)
 
 
-@app.on_event("startup")
-async def startup():
-    loop = asyncio.get_event_loop()
-    connection = await aio_pika.connect("amqp://guest:guest@localhost/", loop=loop)
-    channel = await connection.channel()
-    not_activated_queue = await channel.declare_queue("not-activated")
-    await not_activated_queue.consume()
-
-
 my_cron = CronTab(user="root")
 job_add_non_activated_accounts = my_cron.new(
-    command="python /app/src/background_jobs/add_non_activated_accounts_to_queue.py"
+    command="python /app/src/background_jobs/remove_expired_user_accounts.py"
 )
 job_add_non_activated_accounts.hour.every(1)
 my_cron.write()
