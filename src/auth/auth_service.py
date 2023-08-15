@@ -41,12 +41,12 @@ class AuthService(IAuthService):
 
             # invalidate token if exp is not found in payload
             exp = (
-                (datetime.now() - timedelta(minutes=1)).timestamp()
+                (datetime.utcnow() - timedelta(minutes=1)).timestamp()
                 if not payload.get("exp")
                 else payload.get("exp")
             )
 
-            if datetime.fromtimestamp(exp) < datetime.now():
+            if datetime.utcfromtimestamp(exp) < datetime.now():
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail=AuthExceptions.TOKEN_EXPIRED.value,
