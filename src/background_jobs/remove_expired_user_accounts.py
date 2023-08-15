@@ -3,5 +3,6 @@ from datetime import datetime, timedelta
 import asyncio
 
 user_repo: UserRepo = UserRepo()
-expiration = datetime.utcnow() - timedelta(hours=24)
+# expiration = datetime.utcnow() - timedelta(hours=24)
+expiration = datetime.utcnow() - timedelta(minutes=5)
 asyncio.create_task(user_repo.remove_expired_user_accounts(expiration=expiration))

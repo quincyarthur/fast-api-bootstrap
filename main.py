@@ -27,7 +27,8 @@ my_cron = CronTab(user="root")
 job_remove_expired_user_accounts = my_cron.new(
     command="python /app/src/background_jobs/remove_expired_user_accounts.py"
 )
-job_remove_expired_user_accounts.hour.every(1)
+# job_remove_expired_user_accounts.hour.every(1)
+job_remove_expired_user_accounts.minute.every(5)
 my_cron.write()
 
 
