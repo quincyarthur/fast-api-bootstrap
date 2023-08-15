@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 import asyncio
 import aio_pika
+from crontab import CronTab
 
 ALLOWED_HOSTS = ["*"]
 
@@ -31,6 +32,14 @@ async def startup():
     channel = await connection.channel()
     not_activated_queue = await channel.declare_queue("not-activated")
     await not_activated_queue.consume()
+
+
+my_cron = CronTab(user="root")
+job_add_non_activated_accounts = my_cron.new(
+    command="python /app/src/background_jobs/add_non_activated_accounts.py"
+)
+job_add_non_activated_accounts.hour.every(1)
+my_cron.write()
 
 
 @app.get("/")
