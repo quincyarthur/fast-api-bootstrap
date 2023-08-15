@@ -24,10 +24,10 @@ app.include_router(auth_controller.router)
 
 
 my_cron = CronTab(user="root")
-job_add_non_activated_accounts = my_cron.new(
+job_remove_expired_user_accounts = my_cron.new(
     command="python /app/src/background_jobs/remove_expired_user_accounts.py"
 )
-job_add_non_activated_accounts.hour.every(1)
+job_remove_expired_user_accounts.hour.every(1)
 my_cron.write()
 
 
