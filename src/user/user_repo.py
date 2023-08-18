@@ -60,8 +60,9 @@ class UserRepo(IUserRepo):
         return await self.db_session.commit()
 
     async def remove_expired_user_accounts(self, expiration: datetime) -> None:
-        return await self.db_session.execute(
+        await self.db_session.execute(
             delete(User).where(
                 User.activated == False and User.inserted_date <= expiration
             )
         )
+        return await self.db_session.commit()
