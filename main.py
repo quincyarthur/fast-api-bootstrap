@@ -23,7 +23,7 @@ app.include_router(user_controller.router)
 app.include_router(auth_controller.router)
 
 
-with CronTab(user="root", log="/home/cron.log") as my_cron:
+with CronTab(user="root") as my_cron:
     if not list(my_cron.find_comment(comment="job_remove_expired_user_accounts")):
         job_remove_expired_user_accounts = my_cron.new(
             command="/app/src/background_jobs/set_env.sh /usr/local/bin/python /app/src/background_jobs/remove_expired_user_accounts.py",

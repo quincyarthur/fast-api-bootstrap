@@ -1,1 +1,0 @@
-bash -c "export SHELL=/bin/bash; export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
