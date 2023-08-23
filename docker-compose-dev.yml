@@ -6,8 +6,6 @@ services:
       - .:/app
     ports:
       - 3000:3000
-      - 8000:8000
-      - 9001:9001
     depends_on:
       - db
 
