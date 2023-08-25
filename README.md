@@ -37,8 +37,8 @@ This template is intended to quickly bootstrap a new REST API. It comes wired wi
 
 #### API Documentation
 
-* <a href=http://localhost:3000/redoc target="_blank">Standard Docs</a>
-* <a href=http://localhost:3000/docs target="_blank">Interactive Docs</a>
+* <a href="http://localhost:3000/redoc" target="_blank">Standard Docs</a>
+* <a href="http://localhost:3000/docs" target="_blank">Interactive Docs</a>
 
 #### FAQ
 
