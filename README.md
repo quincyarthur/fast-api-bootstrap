@@ -37,8 +37,8 @@ This template is intended to quickly bootstrap a new REST API. It comes wired wi
 
 #### API Documentation
 
-* Interactive (http://localhost:3000/docs)
-* Standard (http://localhost:3000/redoc)
+* [Standard](http://localhost:3000/redoc)
+* [Interactive](http://localhost:3000/docs)
 
 #### FAQ
 
