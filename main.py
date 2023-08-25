@@ -4,7 +4,9 @@ from src.auth import auth_controller
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 import asyncio
+from db.config import engine
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from src.background_jobs import remove_expired_user_accounts
 ALLOWED_HOSTS = ["*"]
 
@@ -24,7 +26,9 @@ app.include_router(user_controller.router)
 app.include_router(auth_controller.router)
 
 
+data_store = SQLAlchemyJobStore(engine=engine)
 scheduler = AsyncIOScheduler()
+scheduler.configure(jobstores={'default':data_store})
 
 #start_date='2023-06-21 10:00:00'
 scheduler.add_job(remove_expired_user_accounts, 'interval', seconds=10)
