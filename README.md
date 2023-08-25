@@ -8,6 +8,7 @@ This template is intended to quickly bootstrap a new REST API. It comes wired wi
 * User Account Activation
 * Resend Account Activation Email
 * Forgot Password
+* Background Job that removes users who have not activated their accounts within 24 hours
 
 
 #### Project Dependencies:
@@ -18,6 +19,7 @@ This template is intended to quickly bootstrap a new REST API. It comes wired wi
 * [Google (Web Client Credentials)](https://console.developers.google.com/apis) **_Optional_**
 * Alebmic 
 * SQLAlchemy
+* APScheduler
 
 
 #### Instructions:
