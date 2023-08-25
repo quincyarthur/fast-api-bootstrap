@@ -20,4 +20,4 @@ def sync_remove_expired_accounts():
 
 
 if __name__ == "__main__":
-    asyncio.run(remove_expired_accounts())
+    sync_remove_expired_accounts()
