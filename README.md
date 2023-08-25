@@ -35,6 +35,11 @@ This template is intended to quickly bootstrap a new REST API. It comes wired wi
 7. Start container
 `run docker compose -f docker-compose-dev.yml up`
 
+#### API Documentation
+
+* Interactive (http://localhost:3000/docs)
+* Standard (http://localhost:3000/redoc)
+
 #### FAQ
 
 1. Why isn't Alembic recognizing changes in my model?
