@@ -10,7 +10,7 @@ from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from src.background_jobs.remove_expired_user_accounts import (
     sync_remove_expired_accounts,
 )
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 ALLOWED_HOSTS = ["*"]
@@ -47,9 +47,7 @@ try:
         sync_remove_expired_accounts,
         "interval",
         hours=24,
-        run_date=datetime.combine(
-            datetime.utcnow() + datetime.timedelta(days=1), datetime.min.time()
-        ),
+        start_date=datetime.combine(datetime.utcnow(), datetime.min.time()),
         misfire_grace_time=(12 * 60 * 60),
     )
     scheduler.start()
