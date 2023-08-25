@@ -47,7 +47,9 @@ try:
         sync_remove_expired_accounts,
         "interval",
         hours=24,
-        start_date=datetime.utcnow(),
+        run_date=datetime.combine(
+            datetime.utcnow() + datetime.timedelta(days=1), datetime.min.time()
+        ),
         misfire_grace_time=(12 * 60 * 60),
     )
     scheduler.start()
