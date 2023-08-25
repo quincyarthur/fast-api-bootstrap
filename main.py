@@ -4,10 +4,13 @@ from src.auth import auth_controller
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 import asyncio
-from db.config import engine
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from sqlalchemy.engine import create_engine
+from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-from src.background_jobs import remove_expired_user_accounts
+from src.background_jobs.remove_expired_user_accounts import sync_remove_expired_accounts
+from datetime import datetime
+import os
+
 ALLOWED_HOSTS = ["*"]
 
 app = FastAPI()
@@ -26,16 +29,13 @@ app.include_router(user_controller.router)
 app.include_router(auth_controller.router)
 
 
-data_store = SQLAlchemyJobStore(engine=engine)
-scheduler = AsyncIOScheduler()
-scheduler.configure(jobstores={'default':data_store})
-
-#start_date='2023-06-21 10:00:00'
-scheduler.add_job(remove_expired_user_accounts, 'interval', seconds=10)
-scheduler.start()
+data_store = SQLAlchemyJobStore(engine=create_engine(url=f"postgresql+psycopg2://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}"))
+scheduler = BackgroundScheduler(timezone='UTC')
+scheduler.configure(jobstores={'default':data_store},job_defaults = {'coalesce': True,'max_instances': 1})
 
 try:
-    asyncio.get_event_loop().run_forever()
+    scheduler.add_job(sync_remove_expired_accounts, 'interval', hours=24,start_date=datetime.utcnow(),misfire_grace_time=(12*60*60))
+    scheduler.start()
 except KeyboardInterrupt:
     pass
 finally:
