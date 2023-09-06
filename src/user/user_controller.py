@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from src.user.user_service import UserService, CreateUserDTO, UserDTO, UserExceptions
 from src.user.enum.user_origins import UserOrigins
 from src.auth.auth_service import AuthService
@@ -10,7 +10,6 @@ from utils.jwt import create_access_token
 from utils.password import Password
 from src.user.interface.user_service_interface import IUserService
 from src.auth.interface.auth_service_interface import IAuthService
-
 from fastapi.security import OAuth2PasswordBearer
 
 local_user_oauth = OAuth2PasswordBearer(tokenUrl="auth/signin")
@@ -25,14 +24,15 @@ router = APIRouter(
 @router.post("/", response_model=UserDTO, summary="Create user")
 async def create_user(
     user: CreateUserDTO,
+    background_tasks: BackgroundTasks,
     user_service: IUserService = Depends(UserService),
     response_model_exclude_none=True,
-    email_service: IEmail = Depends(SendInBlue),
+    email_service: IEmail = Depends(SendInBlue)
 ):
     user.origin = UserOrigins.LOCAL.value
     created_user = await user_service.add_user(create_user=user)
     created_user = await user_service.exclude_password(user=created_user)
-    await send_activation_email(user=created_user, email_service=email_service)
+    background_tasks.add_task(send_activation_email,user=created_user, email_service=email_service)
     return created_user
 
 
