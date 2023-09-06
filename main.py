@@ -59,8 +59,8 @@ finally:
 
 
 @app.on_event("startup")
-async def startup() -> None:
-    upgrade(Config(), "head")
+def startup() -> None:
+    upgrade(Config("/app/alembic.ini"), "head")
 
 
 @app.get("/")
