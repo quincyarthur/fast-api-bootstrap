@@ -1,7 +1,6 @@
 services:
   api:
     build: .
-    command: python -m uvicorn main:app --host 0.0.0.0 --port 3000 --reload --reload-include *
     volumes:
       - .:/app
     ports:

@@ -11,8 +11,6 @@ from src.background_jobs.remove_expired_user_accounts import (
 )
 from datetime import datetime
 import os
-from alembic.config import Config
-from alembic.command import upgrade
 
 ALLOWED_HOSTS = ["*"]
 
@@ -30,7 +28,6 @@ app.add_middleware(
 
 app.include_router(user_controller.router)
 app.include_router(auth_controller.router)
-
 
 data_store = SQLAlchemyJobStore(
     engine=create_engine(
@@ -56,11 +53,6 @@ except KeyboardInterrupt:
     pass
 finally:
     scheduler.shutdown()
-
-
-@app.on_event("startup")
-def startup() -> None:
-    upgrade(Config("/app/alembic.ini"), "head")
 
 
 @app.get("/")
