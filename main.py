@@ -3,14 +3,13 @@ from src.user import user_controller
 from src.auth import auth_controller
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-import asyncio
 from sqlalchemy.engine import create_engine
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from src.background_jobs.remove_expired_user_accounts import (
     sync_remove_expired_accounts,
 )
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 from alembic.config import Config
 from alembic.command import upgrade
