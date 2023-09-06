@@ -12,6 +12,8 @@ from src.background_jobs.remove_expired_user_accounts import (
 )
 from datetime import datetime, timedelta
 import os
+from alembic.config import Config
+from alembic.command import upgrade
 
 ALLOWED_HOSTS = ["*"]
 
@@ -55,6 +57,11 @@ except KeyboardInterrupt:
     pass
 finally:
     scheduler.shutdown()
+
+
+@app.on_event("startup")
+async def startup() -> None:
+    upgrade(Config(), "head")
 
 
 @app.get("/")
