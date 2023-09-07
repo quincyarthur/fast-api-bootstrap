@@ -27,12 +27,14 @@ async def create_user(
     background_tasks: BackgroundTasks,
     user_service: IUserService = Depends(UserService),
     response_model_exclude_none=True,
-    email_service: IEmail = Depends(SendInBlue)
+    email_service: IEmail = Depends(SendInBlue),
 ):
     user.origin = UserOrigins.LOCAL.value
     created_user = await user_service.add_user(create_user=user)
     created_user = await user_service.exclude_password(user=created_user)
-    background_tasks.add_task(send_activation_email,user=created_user, email_service=email_service)
+    background_tasks.add_task(
+        send_activation_email, user=created_user, email_service=email_service
+    )
     return created_user
 
 
@@ -65,7 +67,7 @@ async def forgot_password(
         template_id=SIBEmailTemplates.FORGOT_PASSWORD.value,
         params=params,
     )
-    background_tasks.add_task(email_service.send,email=email)
+    background_tasks.add_task(email_service.send, email=email)
 
 
 @router.put("/password", summary="Update User Password")
@@ -103,7 +105,9 @@ async def resend_account_activation_email(
     email_service: IEmail = Depends(SendInBlue),
 ):
     user = await user_service.find_by_email(email=email_address)
-    background_tasks.add_task(send_activation_email,user=user, email_service=email_service)
+    background_tasks.add_task(
+        send_activation_email, user=user, email_service=email_service
+    )
 
 
 async def send_activation_email(user: UserDTO, email_service: IEmail) -> None:
