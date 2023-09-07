@@ -52,6 +52,7 @@ async def get_current_user(
 @router.post("/forgot-password", summary="Forgot Password")
 async def forgot_password(
     email_address: str,
+    background_tasks: BackgroundTasks,
     user_service: IUserService = Depends(UserService),
     email_service: IEmail = Depends(SendInBlue),
 ):
@@ -64,7 +65,7 @@ async def forgot_password(
         template_id=SIBEmailTemplates.FORGOT_PASSWORD.value,
         params=params,
     )
-    await email_service.send(email=email)
+    background_tasks.add_task(email_service.send,email=email)
 
 
 @router.put("/password", summary="Update User Password")
