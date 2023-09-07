@@ -43,7 +43,7 @@ class UserRepo(IUserRepo):
         user_dto: UserDTO = None
 
         if user:
-            user_dto = UserDTO(**user.__dict__)
+            user_dto = UserDTO(first_name=user.first_name,last_name=user.last_name,email=user.email,origin=user.origin,activated=user.activated,id=user.id)
 
         return user_dto
 
