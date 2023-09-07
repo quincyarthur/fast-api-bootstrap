@@ -98,11 +98,12 @@ async def update_activation_flag(
 @router.post("/resend-activation", summary="Resend User Activation Email")
 async def resend_account_activation_email(
     email_address: str,
+    background_tasks: BackgroundTasks,
     user_service: IUserService = Depends(UserService),
     email_service: IEmail = Depends(SendInBlue),
 ):
     user = await user_service.find_by_email(email=email_address)
-    await send_activation_email(user=user, email_service=email_service)
+    background_tasks.add_task(send_activation_email,user=user, email_service=email_service)
 
 
 async def send_activation_email(user: UserDTO, email_service: IEmail) -> None:
